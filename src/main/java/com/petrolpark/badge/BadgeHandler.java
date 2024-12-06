@@ -73,7 +73,7 @@ public class BadgeHandler {
                         pair.getFirst().grantAdvancement(player));
                 });
             } catch (Exception e) {};
-        }).join();
+        });
 
     };
 
@@ -94,7 +94,7 @@ public class BadgeHandler {
 
                 responseFuture.thenAcceptAsync(response -> {
                     getAndAddBadges(player);
-                }).join();
+                });
             
             } else { // If Early Bird is no longer obtainable, get the Badges straight away
                 getAndAddBadges(player);
