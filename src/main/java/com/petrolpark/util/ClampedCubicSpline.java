@@ -97,7 +97,7 @@ public class ClampedCubicSpline {
                 double t = (double) j / (segmentPointCount - 1);
                 Vec3 point = interpolateSegment(p0, p1, m0, m1, t);
                 points.add(point);
-                tangents.add(interpolateTangent(p0, p1, m0, m1, t));
+                tangents.add(interpolateTangent(p0, p1, m0, m1, t).normalize());
 
                 BlockPos containing = BlockPos.containing(point);
                 if (point.subtract(Vec3.atCenterOf(containing)).lengthSqr() < segmentRadius) blockedPositions.add(containing);
@@ -169,6 +169,10 @@ public class ClampedCubicSpline {
         return points;
     };
 
+    public List<Vec3> getTangents() {
+        return tangents;
+    };
+
     public Set<BlockPos> getBlockedPositions() {
         return blockedPositions;
     };
@@ -176,6 +180,13 @@ public class ClampedCubicSpline {
     public void addControlPoint(Vec3 controlPoint) {
         controlPoints.add(controlPoints.size() - 1, controlPoint);
         recalculate();  
+    };
+
+    public boolean moveControlPoint(int controlPointIndex, Vec3 newLocation) {
+        if (newLocation.distanceToSqr(controlPoints.get(controlPointIndex)) < 1 / 64f) return false;
+        controlPoints.set(controlPointIndex, newLocation);
+        recalculate();
+        return true;
     };
     
 };
