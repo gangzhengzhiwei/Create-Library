@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.petrolpark.badge.Badge;
 import com.petrolpark.badge.Badges;
+import com.petrolpark.block.PetrolparkBlocks;
 import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
@@ -51,6 +52,7 @@ public class Petrolpark {
 
         Badges.register();
         PetrolparkRecipeTypes.register(modEventBus);
+        PetrolparkBlocks.register();
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
