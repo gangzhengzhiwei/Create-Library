@@ -8,4 +8,6 @@ public class PetrolparkPartialModels {
     public static final PartialModel
 
     STAINLESS_STEEL_PIPE = new PartialModel(Petrolpark.asResource("block/stainless_steel_pipe"));
+
+    public static final void init() {};
 };

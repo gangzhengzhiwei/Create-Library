@@ -2,52 +2,86 @@ package com.petrolpark.util;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class ClampedCubicSpline {
-    
+
     // Input vectors
     protected Vec3 startTangent;
     protected Vec3 endTangent;
-
     protected List<Vec3> controlPoints;
-
-    // Input parameters
-    public final double maxAngle; // Maximum angle between two segments (in radians)
+    // Input parameter
     public final double segmentLength; // Size of a segment
-    public final double segmentRadius; // Distance from a segment to the center of a block to "block" that block
-    
+
+    // Intermediate data
+    protected double totalLength = 0d;
+
     // Results
     protected ArrayList<Vec3> points;
     protected ArrayList<Vec3> tangents;
-    protected boolean tooSharp;
-    protected Set<BlockPos> blockedPositions;
-
-    public ClampedCubicSpline(List<Vec3> controlPoints, Vec3 startDir, Vec3 endDir, double maxAngle, double segmentLength, double segmentRadius) {
+    
+    public ClampedCubicSpline(List<Vec3> controlPoints, Vec3 startDir, Vec3 endDir, double segmentLength) {
         this.controlPoints = controlPoints;
         startTangent = startDir;
         endTangent = endDir;
-        this.maxAngle = maxAngle;
         this.segmentLength = segmentLength;
-        this.segmentRadius = segmentRadius;
         recalculate();
     };
 
-    public ClampedCubicSpline(Vec3 start, Vec3 end, Vec3 startDir, Vec3 endDir, double maxAngle, double segmentLength, double segmentRadius) {
+    protected ClampedCubicSpline(Vec3 start, Vec3 end, Vec3 startDir, Vec3 endDir, double segmentLength) {
         controlPoints = new ArrayList<>();
         controlPoints.add(start);
         controlPoints.add(end);
         startTangent = startDir;
         endTangent = endDir;
-        this.maxAngle = maxAngle;
         this.segmentLength = segmentLength;
-        this.segmentRadius = segmentRadius;
+    };
+
+    public Vec3 getStartTangent() {
+        return startTangent;
+    };
+
+    public Vec3 getEndTangent() {
+        return endTangent;
+    };
+
+    public List<Vec3> getControlPoints() {
+        return controlPoints;
+    };
+
+    public List<Vec3> getPoints() {
+        return points;
+    };
+
+    public List<Vec3> getTangents() {
+        return tangents;
+    };
+
+    public double getLength() {
+        return totalLength;
+    };
+
+    public void addControlPoint(Vec3 controlPoint) {
+        controlPoints.add(controlPoints.size() - 1, controlPoint);
+        recalculate();  
+    };
+
+    public void addInterpolatedControlPoint(int index) {
+        controlPoints.add(index, controlPoints.get(index - 1).add(controlPoints.get(index)).scale(0.5d));
         recalculate();
+    };
+
+    public void removeControlPoint(int index) {
+        controlPoints.remove(index);
+        recalculate();
+    };
+
+    public boolean moveControlPoint(int controlPointIndex, Vec3 newLocation) {
+        if (newLocation.distanceToSqr(controlPoints.get(controlPointIndex)) < 1 / 64f) return false;
+        controlPoints.set(controlPointIndex, newLocation);
+        recalculate();
+        return true;
     };
 
     public void recalculate() {
@@ -66,7 +100,7 @@ public class ClampedCubicSpline {
 
         // Compute arc lengths for each segment
         double[] lengths = new double[n];
-        double totalLength = 0d;
+        totalLength = 0d;
         for (int i = 0; i < n; i++) {
             lengths[i] = approximateSegmentLength(controlPoints.get(i), controlPoints.get(i+1), controlTangents[i], controlTangents[i + 1], 10);
             totalLength += lengths[i];
@@ -85,7 +119,6 @@ public class ClampedCubicSpline {
         // Populate points and find blocked blocks
         points = new ArrayList<>();
         tangents = new ArrayList<>();
-        blockedPositions = new HashSet<>();
         for (int i = 0; i < n; i++) {
             Vec3 p0 = controlPoints.get(i);
             Vec3 p1 = controlPoints.get(i+1);
@@ -96,27 +129,15 @@ public class ClampedCubicSpline {
             for (int j = 0; j < segmentPointCount; j++) {
                 double t = (double) j / (segmentPointCount - 1);
                 Vec3 point = interpolateSegment(p0, p1, m0, m1, t);
+                Vec3 tangent = interpolateTangent(p0, p1, m0, m1, t).normalize();
                 points.add(point);
-                tangents.add(interpolateTangent(p0, p1, m0, m1, t).normalize());
-
-                BlockPos containing = BlockPos.containing(point);
-                if (point.subtract(Vec3.atCenterOf(containing)).lengthSqr() < segmentRadius) blockedPositions.add(containing);
-            };
-        };
-
-        // Check its not too sharp
-        tooSharp = false; // Start by assuming not
-        for (int i = 0; i < tangents.size() - 1; i++) {
-            Vec3 t1 = tangents.get(i);
-            Vec3 t2 = tangents.get(i+1);
-            double dot = t1.dot(t2) / (t1.length() * t2.length());
-            double angle = Math.acos(Mth.clamp(dot, -1d, 1d));
-            if (angle > maxAngle) {
-                tooSharp = true;
-                break;
+                tangents.add(tangent);
+                forEachSegment(i, point, tangent);
             };
         };
     };
+
+    protected void forEachSegment(int index, Vec3 point, Vec3 tangent) {};
 
     private static double approximateSegmentLength(Vec3 p0, Vec3 p1, Vec3 m0, Vec3 m1, int samples) {
         double length = 0d;
@@ -153,40 +174,4 @@ public class ClampedCubicSpline {
         return p0.scale(h00).add(m0.scale(h10)).add(p1.scale(h01)).add(m1.scale(h11));
     };
 
-    public Vec3 getStartTangent() {
-        return startTangent;
-    };
-
-    public Vec3 getEndTangent() {
-        return endTangent;
-    };
-
-    public List<Vec3> getControlPoints() {
-        return controlPoints;
-    };
-
-    public List<Vec3> getPoints() {
-        return points;
-    };
-
-    public List<Vec3> getTangents() {
-        return tangents;
-    };
-
-    public Set<BlockPos> getBlockedPositions() {
-        return blockedPositions;
-    };
-
-    public void addControlPoint(Vec3 controlPoint) {
-        controlPoints.add(controlPoints.size() - 1, controlPoint);
-        recalculate();  
-    };
-
-    public boolean moveControlPoint(int controlPointIndex, Vec3 newLocation) {
-        if (newLocation.distanceToSqr(controlPoints.get(controlPointIndex)) < 1 / 64f) return false;
-        controlPoints.set(controlPointIndex, newLocation);
-        recalculate();
-        return true;
-    };
-    
 };

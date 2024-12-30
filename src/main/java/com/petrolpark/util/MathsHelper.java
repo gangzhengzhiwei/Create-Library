@@ -68,4 +68,12 @@ public class MathsHelper {
         };
         return hit;
     };
+
+    public static double azimuth(Vec3 vec) {
+        return Math.atan2(vec.z, vec.x);
+    };
+
+    public static double inclination(Vec3 vec) {
+        return Math.acos(vec.y);
+    };
 };

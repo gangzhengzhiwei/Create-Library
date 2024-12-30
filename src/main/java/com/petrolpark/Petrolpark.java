@@ -6,18 +6,22 @@ import com.mojang.logging.LogUtils;
 import com.petrolpark.badge.Badge;
 import com.petrolpark.badge.Badges;
 import com.petrolpark.block.PetrolparkBlocks;
+import com.petrolpark.block.entity.PetrolparkBlockEntityTypes;
 import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
 import com.petrolpark.itemdecay.DecayingItemHandler;
+import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.recipe.PetrolparkRecipeTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -52,7 +56,11 @@ public class Petrolpark {
 
         Badges.register();
         PetrolparkRecipeTypes.register(modEventBus);
+        PetrolparkBlockEntityTypes.register();
         PetrolparkBlocks.register();
+
+        // Client
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PetrolparkClient.clientCtor(modEventBus, forgeEventBus));
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -69,7 +77,9 @@ public class Petrolpark {
     };
 
     private void init(final FMLCommonSetupEvent event) {
-        
+        event.enqueueWork(() -> {
+            PetrolparkMessages.register();
+        });
     };
 
 };

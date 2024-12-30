@@ -31,7 +31,32 @@
     "item.petrolpark.badge.unknown": "This isn't a real Badge...",
     "item.petrolpark.decaying_item.remaining": "Decays in %1$s",
 
+    "petrolpark.key.tube.build": "Confirm tube construction",
+    "petrolpark.key.tube.delete_control_point": "Delete tube node",
+    "petrolpark.key.tube.add_control_point_after": "Add tube node (after)",
+    "petrolpark.key.tube.add_control_point_before": "Add tube node (before)",
+    "petrolpark.key.tube.cancel": "Cancel tube construction",
+
     "petrolpark.recipe.biome_specific": "Must be done in:",
     "petrolpark.recipe.item_decay": "Item Decay",
-    "petrolpark.recipe.manual_crafting": "Manual-Only Crafting"
+    "petrolpark.recipe.manual_crafting": "Manual-Only Crafting",
+
+    "petrolpark.tube.title": "    Constructing %1$s %2$s",
+    "petrolpark.tube.control.build": "    [%1$s] Build",
+    "petrolpark.tube.control.grab_control_point": "    [Drag] Move node",
+    "petrolpark.tube.control.move_control_point": "    [Scroll] Bring closer/further",
+    "petrolpark.tube.control.delete_control_point": "    [%1$s] Delete node",
+    "petrolpark.tube.control.add_control_point_after": "    [%1$s] Add node after",
+    "petrolpark.tube.control.add_control_point_before": "    [%1$s] Add node before",
+    "petrolpark.tube.control.cancel": "    [%1$s] Cancel",
+
+    "petrolpark.tube.result.success": "Can be built",
+    "petrolpark.tube.result.blocked": "Blocks in the way",
+    "petrolpark.tube.result.too_sharp": "Bends too sharply",
+    "petrolpark.tube.result.too_long": "Too long",
+    "petrolpark.tube.result.too_short": "Too short",
+    "petrolpark.tube.result.too_big": "Tube stretches too far",
+    "petrolpark.tube.result.too_poor": "Not enough %1$s",
+    "petrolpark.tube.result.wrong_block": "Can't connect those types of blocks",
+    "petrolpark.tube.result.wrong_face": "Can't connect on that face"
 }
