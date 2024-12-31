@@ -40,7 +40,7 @@ public class TubeBehaviour extends BlockEntityBehaviour {
         controller = true;
         endPos = spline.end.getPos();
         this.spline = spline;
-        blockEntity.sendData();
+        blockEntity.notifyUpdate();
     };
 
     @Override
