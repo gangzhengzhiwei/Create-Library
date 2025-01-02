@@ -3,6 +3,7 @@ package com.petrolpark.util;
 import java.util.List;
 import java.util.ArrayList;
 
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class ClampedCubicSpline {
@@ -20,6 +21,7 @@ public class ClampedCubicSpline {
     // Results
     protected ArrayList<Vec3> points;
     protected ArrayList<Vec3> tangents;
+    protected AABB occupiedVolume;
     
     public ClampedCubicSpline(List<Vec3> controlPoints, Vec3 startDir, Vec3 endDir, double segmentLength) {
         this.controlPoints = controlPoints;
@@ -116,9 +118,10 @@ public class ClampedCubicSpline {
             segmentPointCounts.add((int)Math.max(1, Math.round(length * density)));
         };
 
-        // Populate points and find blocked blocks
+        // Populate points and determine occupied volume
         points = new ArrayList<>();
         tangents = new ArrayList<>();
+        occupiedVolume = new AABB(controlPoints.get(0), controlPoints.get(controlPoints.size()-1));
         for (int i = 0; i < n; i++) {
             Vec3 p0 = controlPoints.get(i);
             Vec3 p1 = controlPoints.get(i+1);
@@ -132,6 +135,7 @@ public class ClampedCubicSpline {
                 Vec3 tangent = interpolateTangent(p0, p1, m0, m1, t).normalize();
                 points.add(point);
                 tangents.add(tangent);
+                occupiedVolume.expandTowards(point);
                 forEachSegment(i, point, tangent);
             };
         };

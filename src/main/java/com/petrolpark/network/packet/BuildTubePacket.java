@@ -2,8 +2,8 @@ package com.petrolpark.network.packet;
 
 import java.util.function.Supplier;
 
-import com.petrolpark.block.ITubeBlock;
-import com.petrolpark.util.TubeSpline;
+import com.petrolpark.tube.ITubeBlock;
+import com.petrolpark.tube.TubeSpline;
 import com.petrolpark.util.ItemHelper;
 import com.petrolpark.util.NetworkHelper;
 

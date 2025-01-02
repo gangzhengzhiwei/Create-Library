@@ -1,6 +1,6 @@
 package com.petrolpark.event;
 
-import com.petrolpark.util.ClientTubePlacementHandler;
+import com.petrolpark.tube.ClientTubePlacementHandler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class ClientEvents {
     
     @EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-    public static class ModBudEvents {
+    public static class ModBusEvents {
 
         @SubscribeEvent
 		public static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {

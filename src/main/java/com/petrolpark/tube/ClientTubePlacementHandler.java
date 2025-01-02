@@ -1,4 +1,4 @@
-package com.petrolpark.util;
+package com.petrolpark.tube;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,10 +7,11 @@ import java.util.function.Supplier;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.block.ITubeBlock;
 import com.petrolpark.client.key.PetrolparkKeys;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.network.packet.BuildTubePacket;
+import com.petrolpark.util.BlockFace;
+import com.petrolpark.util.RayHelper;
 import com.petrolpark.util.RayHelper.CustomHitResult;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.compat.Mods;
@@ -250,6 +251,9 @@ public class ClientTubePlacementHandler {
             spline.addControlPoint(start.getCenter().add(end.getCenter()).scale(0.5d)); //temporary
             Minecraft mc = Minecraft.getInstance();
             revalidateSpline(mc);
+        } else {
+            cancel();
+            tryConnect(location, stack, tubeBlock);  
         };
     };
 

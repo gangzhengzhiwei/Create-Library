@@ -1,8 +1,6 @@
-package com.petrolpark.item;
+package com.petrolpark.tube;
 
-import com.petrolpark.block.ITubeBlock;
 import com.petrolpark.util.BlockFace;
-import com.petrolpark.util.ClientTubePlacementHandler;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;

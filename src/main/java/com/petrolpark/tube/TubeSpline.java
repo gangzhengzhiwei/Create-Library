@@ -1,4 +1,4 @@
-package com.petrolpark.util;
+package com.petrolpark.tube;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.petrolpark.Petrolpark;
-import com.petrolpark.block.ITubeBlock;
+import com.petrolpark.util.BlockFace;
+import com.petrolpark.util.ClampedCubicSpline;
+import com.petrolpark.util.MathsHelper;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.ChatFormatting;
@@ -76,7 +78,7 @@ public class TubeSpline extends ClampedCubicSpline {
     @Override
     protected void forEachSegment(int index, Vec3 point, Vec3 tangent) {
         BlockPos containing = BlockPos.containing(point);
-        if (point.subtract(Vec3.atCenterOf(containing)).lengthSqr() < segmentRadius) blockedPositions.add(containing);
+        if (point.subtract(Vec3.atCenterOf(containing)).lengthSqr() < segmentRadius && !containing.equals(start.getPos()) && !containing.equals(end.getPos())) blockedPositions.add(containing);
     };
 
     public List<Vec3> getMiddleControlPoints() {
@@ -103,8 +105,11 @@ public class TubeSpline extends ClampedCubicSpline {
             result = TubePlacementResult.WRONG_FACE;
             return;
         };
-        
         //TODO too long too small too big
+        if (MathsHelper.volume(occupiedVolume) > 256d) {
+            result = TubePlacementResult.TOO_LONG;
+            return;
+        };
         if (tooSharp) {
             result = TubePlacementResult.TOO_SHARP;
             return;

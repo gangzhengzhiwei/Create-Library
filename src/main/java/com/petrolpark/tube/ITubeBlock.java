@@ -1,7 +1,4 @@
-package com.petrolpark.block;
-
-import com.petrolpark.item.TubeBlockItem;
-import com.petrolpark.util.TubeSpline;
+package com.petrolpark.tube;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,8 +29,7 @@ public interface ITubeBlock {
     /**
      * Called on the <em>controller</em> only, after all validations.
      * @param level
-     * @param pos
-     * @param endPos
+     * @param spline
      */
     public void connectTube(Level level, TubeSpline spline);
 };
