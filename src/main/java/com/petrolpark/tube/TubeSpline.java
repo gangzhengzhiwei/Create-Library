@@ -7,7 +7,6 @@ import java.util.List;
 
 import java.util.function.Consumer;
 
-import com.petrolpark.Petrolpark;
 import com.petrolpark.util.BlockFace;
 import com.petrolpark.util.ClampedCubicSpline;
 import com.petrolpark.util.MathsHelper;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -69,8 +69,7 @@ public class TubeSpline extends ClampedCubicSpline {
             double angle = Math.acos(Mth.clamp(dot, -1d, 1d));
             if (angle > maxAngle) {
                 tooSharp = true;
-                Petrolpark.LOGGER.info("too sharp: "+angle * 180d / Mth.PI);
-                //break;
+                break;
             };
         };
     };
@@ -89,6 +88,11 @@ public class TubeSpline extends ClampedCubicSpline {
         return blockedPositions;
     };
 
+    @Override
+    public AABB getOccupiedVolume() {
+        return super.getOccupiedVolume().inflate(segmentRadius);
+    };
+
     public TubePlacementResult getResult() {
         return result;
     };
@@ -100,26 +104,22 @@ public class TubeSpline extends ClampedCubicSpline {
         if (startState.getBlock() != block || endState.getBlock() != block) {
             result = TubePlacementResult.WRONG_BLOCK;
             return;
-        };
-        if (block.getTubeConnectingFace(level, start.getPos(), startState) != start.getFace() || block.getTubeConnectingFace(level, end.getPos(), endState) != end.getFace()) {
+        } else if (block.getTubeConnectingFace(level, start.getPos(), startState) != start.getFace() || block.getTubeConnectingFace(level, end.getPos(), endState) != end.getFace()) {
             result = TubePlacementResult.WRONG_FACE;
             return;
         };
-        //TODO too long too small too big
-        if (MathsHelper.volume(occupiedVolume) > 256d) {
+        //TODO too long
+        if (totalLength <= 1d || start.equals(end)) {
+            result = TubePlacementResult.TOO_SHORT;
+        } else if (MathsHelper.volume(occupiedVolume) > 256d) {
             result = TubePlacementResult.TOO_LONG;
-            return;
-        };
-        if (tooSharp) {
+        } else if (tooSharp) {
             result = TubePlacementResult.TOO_SHARP;
-            return;
-        };
-        if (!checkCanAfford(player, requiredItem, block)) {
+        } else if (!checkCanAfford(player, requiredItem, block)) {
             result = TubePlacementResult.TOO_POOR;
-            return;
+        } else {
+            checkBlocked(level, p -> {});
         };
-        checkBlocked(level, p -> {});
-        return;
     };
 
     public boolean checkBlocked(Level level, Consumer<BlockPos> forEachObstructingBlock) {

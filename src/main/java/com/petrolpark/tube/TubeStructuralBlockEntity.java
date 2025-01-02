@@ -1,7 +1,6 @@
 package com.petrolpark.tube;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -26,7 +25,7 @@ public class TubeStructuralBlockEntity extends SmartBlockEntity {
 
     @Override
     public void destroy() {
-        if (controllerPos != null) Optional.ofNullable(BlockEntityBehaviour.get(getLevel(), controllerPos, TubeBehaviour.TYPE)).ifPresent(TubeBehaviour::disconnect);
+        if (controllerPos != null) TubeBehaviour.get(getLevel(), controllerPos).ifPresent(TubeBehaviour::disconnect);
         super.destroy();
     };
 

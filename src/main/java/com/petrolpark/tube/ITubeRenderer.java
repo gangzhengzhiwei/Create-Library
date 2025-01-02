@@ -29,6 +29,6 @@ public interface ITubeRenderer<T extends SmartBlockEntity> {
         };
     };
 
-    public PartialModel getTubeSegmentModel(SmartBlockEntity be);
+    public PartialModel getTubeSegmentModel(T be);
     
 };

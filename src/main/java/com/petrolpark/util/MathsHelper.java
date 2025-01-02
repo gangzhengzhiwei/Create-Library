@@ -2,6 +2,7 @@ package com.petrolpark.util;
 
 import java.util.Comparator;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
@@ -48,6 +49,14 @@ public class MathsHelper {
 
     public static double inclination(Vec3 vec) {
         return Math.acos(vec.y);
+    };
+
+    public static AABB expandToInclude(AABB box, Vec3 point) {
+        return new AABB(Math.min(box.minX, point.x), Math.min(box.minY, point.y), Math.min(box.minZ, point.z), Math.max(box.maxX, point.x), Math.max(box.maxX, point.y), Math.max(box.maxX, point.z));
+    };
+
+    public static AABB expandToInclude(AABB box, BlockPos pos) {
+        return expandToInclude(expandToInclude(box, Vec3.atLowerCornerOf(pos)), Vec3.atLowerCornerOf(pos).add(1d, 1d, 1d));
     };
 
     public static double volume(AABB box) {

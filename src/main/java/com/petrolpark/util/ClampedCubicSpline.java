@@ -64,6 +64,10 @@ public class ClampedCubicSpline {
         return totalLength;
     };
 
+    public AABB getOccupiedVolume() {
+        return occupiedVolume;
+    };
+ 
     public void addControlPoint(Vec3 controlPoint) {
         controlPoints.add(controlPoints.size() - 1, controlPoint);
         recalculate();  
@@ -135,7 +139,7 @@ public class ClampedCubicSpline {
                 Vec3 tangent = interpolateTangent(p0, p1, m0, m1, t).normalize();
                 points.add(point);
                 tangents.add(tangent);
-                occupiedVolume.expandTowards(point);
+                occupiedVolume = MathsHelper.expandToInclude(occupiedVolume, point);
                 forEachSegment(i, point, tangent);
             };
         };
@@ -170,7 +174,7 @@ public class ClampedCubicSpline {
     private static Vec3 interpolateTangent(Vec3 p0, Vec3 p1, Vec3 m0, Vec3 m1, double t) {
         double t2 = t * t;
 
-        double h00 = 6 * t2 - 6 * t;   // Derivative of Hermite basis function
+        double h00 = 6 * t2 - 6 * t; // Derivative of Hermite basis function
         double h10 = 3 * t2 - 4 * t + 1;
         double h01 = -6 * t2 + 6 * t;
         double h11 = 3 * t2 - 2 * t;
