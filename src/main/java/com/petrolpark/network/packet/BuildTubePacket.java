@@ -63,7 +63,6 @@ public class BuildTubePacket extends C2SPacket {
                 if (!(player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() == tubeBlock)) return;
                 if (!player.getAbilities().instabuild) ItemHelper.removeItems(new InvWrapper(player.getInventory()), s -> s.is(player.getMainHandItem().getItem()), 0); // Remove required Items
                 tubeBlock.connectTube(player.level(), spline);
-                //TODO create dummy blocks
             };
         });
         return true;

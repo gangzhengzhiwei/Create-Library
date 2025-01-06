@@ -17,6 +17,9 @@
         "ServerAdvancementManagerMixin"
     ],
     "client": [
+        "accessor.OutlineEntryAccessor",
+        "accessor.OutlineParamsAccessor",
+        "accessor.OutlinerAccessor",
         "CreativeModeInventoryScreenMixin",
         "PonderUIMixin"
     ],

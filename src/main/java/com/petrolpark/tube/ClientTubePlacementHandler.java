@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.PetrolparkClient;
 import com.petrolpark.client.key.PetrolparkKeys;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.network.packet.BuildTubePacket;
@@ -31,6 +32,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -63,14 +66,14 @@ public class ClientTubePlacementHandler {
     @SubscribeEvent
     public static void tick(ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || mc.player.getMainHandItem() != currentStack || currentStack.isEmpty()) {
+        if (mc.level == null || mc.player == null || mc.player.getMainHandItem() != currentStack || currentStack.isEmpty() || (start != null && mc.level.getBlockState(start.getPos()).getBlock() != tubeBlock)) {
             cancel();
             return;
         };
 
         if (spline == null) return;
         // Check end blocks are still present
-        if (mc.level.getBlockState(start.getPos()).getBlock() != tubeBlock || mc.level.getBlockState(end.getPos()).getBlock() != tubeBlock) {
+        if (mc.level.getBlockState(end.getPos()).getBlock() != tubeBlock) {
             cancel();
             return;
         };
@@ -91,7 +94,7 @@ public class ClientTubePlacementHandler {
         // Check there are enough Items
         canAfford = spline.checkCanAfford(mc.player, currentStack.getItem(), tubeBlock);
 
-        if (controlPointBoxes.isEmpty()) controlPointBoxes = spline.getControlPoints().stream().map(v -> new AABB(v.subtract(1 / 32d, 1 / 32d, 1 / 32d), v.add(1 / 32d, 1 / 32d, 1 / 32d))).toList();
+        if (controlPointBoxes.isEmpty()) controlPointBoxes = spline.getControlPoints().stream().map(v -> new AABB(v.subtract(3 / 32d, 3 / 32d, 3 / 32d), v.add(3 / 32d, 3 / 32d, 3 / 32d))).toList();
 
         // Locate targeted Control Point, or move it if there already is one
         if (!draggingSelectedControlPoint && !controlPointBoxes.isEmpty()) {
@@ -103,7 +106,7 @@ public class ClientTubePlacementHandler {
         // Render Control Points
         for (int i = 0; i < controlPointBoxes.size(); i++) {
             AABB controlPointBox = controlPointBoxes.get(i);
-            CreateClient.OUTLINER.chaseAABB(Pair.of("control_point", i), controlPointBox).colored(color).lineWidth(i == targetedControlPoint ? 2 / 16f : 1.25f / 16f);
+            PetrolparkClient.OUTLINER.showBox(Pair.of("control_point", i), controlPointBox.inflate(i == targetedControlPoint ? 1 / 16d : 0d), 2).colored(color);
         };
 
         // Show message
@@ -221,7 +224,6 @@ public class ClientTubePlacementHandler {
                     controlPointBoxes = new ArrayList<>();
                     revalidateSpline(mc);
                 };
-                //TODO sound
                 return;
             };
         };
@@ -231,6 +233,7 @@ public class ClientTubePlacementHandler {
         Minecraft mc = Minecraft.getInstance();
         if (spline.moveControlPoint(targetedControlPoint, mc.player.getEyePosition().add(mc.player.getViewVector(AnimationTickHolder.getPartialTicks()).scale(distanceToSelectedControlPoint)))) {
             controlPointBoxes = new ArrayList<>(); // All control points need to be moved
+            mc.level.playSound(mc.player, mc.player.getOnPos(), SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.25f, 0.1f);
             revalidateSpline(mc);
         };
     };

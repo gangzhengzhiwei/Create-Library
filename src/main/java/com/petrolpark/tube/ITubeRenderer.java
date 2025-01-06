@@ -22,8 +22,8 @@ public interface ITubeRenderer<T extends SmartBlockEntity> {
             CachedBufferer.partial(getTubeSegmentModel(be), be.getBlockState())
                 .translateBack(Vec3.atLowerCornerOf(be.getBlockPos()))
                 .translate(spline.getPoints().get(i))
-                .rotateXRadians(MathsHelper.inclination(spline.getTangents().get(i)))
                 .rotateYRadians(MathsHelper.azimuth(spline.getTangents().get(i)))
+                .rotateXRadians(MathsHelper.inclination(spline.getTangents().get(i)))
                 .light(light)
                 .renderInto(ms, vc);
         };

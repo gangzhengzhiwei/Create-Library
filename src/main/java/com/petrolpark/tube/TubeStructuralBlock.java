@@ -1,8 +1,11 @@
 package com.petrolpark.tube;
 
+import java.util.function.Consumer;
+
 import com.petrolpark.PetrolparkBlockEntityTypes;
 import com.simibubi.create.foundation.block.IBE;
 
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -11,6 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 
 public class TubeStructuralBlock extends Block implements IBE<TubeStructuralBlockEntity> {
 
@@ -43,6 +49,19 @@ public class TubeStructuralBlock extends Block implements IBE<TubeStructuralBloc
     @Override
     public BlockEntityType<? extends TubeStructuralBlockEntity> getBlockEntityType() {
         return PetrolparkBlockEntityTypes.TUBE_STRUCTURE.get();
+    };
+
+    @OnlyIn(Dist.CLIENT)
+	public void initializeClient(Consumer<IClientBlockExtensions> consumer) {
+		consumer.accept(new RenderProperties());
+	};
+
+    public static class RenderProperties implements IClientBlockExtensions {
+
+        @Override
+        public boolean addDestroyEffects(BlockState state, Level Level, BlockPos pos, ParticleEngine manager) {
+            return true;
+        };
     };
     
 };

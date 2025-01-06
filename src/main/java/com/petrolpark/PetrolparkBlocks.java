@@ -12,7 +12,6 @@ public class PetrolparkBlocks {
     public static final BlockEntry<TubeStructuralBlock> TUBE_STRUCTURE = REGISTRATE.block("tube", TubeStructuralBlock::new)
     .properties(p -> p
         .noCollission()
-        .replaceable()
         .pushReaction(PushReaction.DESTROY)
     ).register();
 

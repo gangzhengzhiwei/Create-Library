@@ -44,15 +44,15 @@ public class MathsHelper {
     };
 
     public static double azimuth(Vec3 vec) {
-        return Math.atan2(vec.z, vec.x);
+        return Math.atan2(vec.x, vec.z);
     };
 
     public static double inclination(Vec3 vec) {
-        return Math.acos(vec.y);
+        return Math.atan2(Math.sqrt(vec.x() * vec.x() + vec.z() * vec.z()), vec.y());
     };
 
     public static AABB expandToInclude(AABB box, Vec3 point) {
-        return new AABB(Math.min(box.minX, point.x), Math.min(box.minY, point.y), Math.min(box.minZ, point.z), Math.max(box.maxX, point.x), Math.max(box.maxX, point.y), Math.max(box.maxX, point.z));
+        return new AABB(Math.min(box.minX, point.x), Math.min(box.minY, point.y), Math.min(box.minZ, point.z), Math.max(box.maxX, point.x), Math.max(box.maxY, point.y), Math.max(box.maxZ, point.z));
     };
 
     public static AABB expandToInclude(AABB box, BlockPos pos) {
