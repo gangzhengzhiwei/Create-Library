@@ -17,9 +17,5 @@ public class PetrolparkRegistrate extends CreateRegistrate {
     public <T extends Badge> BadgeBuilder<T, PetrolparkRegistrate> badge(String name, NonNullSupplier<T> factory) {
 		return (BadgeBuilder<T, PetrolparkRegistrate>) entry(name, c -> BadgeBuilder.create(this, this, name, c, factory));
 	};
-
-    public ContaminantBuilder<PetrolparkRegistrate> contaminant(String name) {
-        return (ContaminantBuilder<PetrolparkRegistrate>) entry(name, c -> new ContaminantBuilder<>(this, this, name, c));
-    };
     
 };

@@ -1,13 +1,26 @@
 package com.petrolpark.contamination;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
+import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkRegistries;
 
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -18,7 +31,8 @@ public class Contaminant {
         instance.group(
             Codec.doubleRange(0d, 1d).fieldOf("preservationProportion").forGetter(Contaminant::getPreservationProportion),
             Codec.intRange(0, 16777215).fieldOf("color").forGetter(Contaminant::getColor),
-            Codec.intRange(0, 16777215).fieldOf("absentColor").forGetter(Contaminant::getAbsentColor)
+            Codec.intRange(0, 16777215).fieldOf("absentColor").forGetter(Contaminant::getAbsentColor),
+            Codec.list(ResourceLocation.CODEC).fieldOf("children").forGetter(c -> c.childResourceLocations)
         ).apply(instance, Contaminant::new)
     ));
 
@@ -44,19 +58,31 @@ public class Contaminant {
     public final double preservationProportion;
     public final int color;
     public final int absentColor;
+    private final List<ResourceLocation> childResourceLocations;
+
+    protected Set<Contaminant> children = new HashSet<>();
+    protected Set<Contaminant> parents = new HashSet<>();
 
     protected ResourceLocation rl;
     protected String descriptionId;
     protected String absentDescriptionId;
+    protected Set<Contaminant> childrenView = null;
+    protected Set<Contaminant> parentsView = null;
 
-    public Contaminant(double preservationProportion, int color, int absentColor) {
+    public Contaminant(double preservationProportion, int color, int absentColor, List<ResourceLocation> childResourceLocations) {
         this.preservationProportion = preservationProportion;
         this.color = color;
         this.absentColor = absentColor;
+        this.childResourceLocations = childResourceLocations;
     };
 
     public double getPreservationProportion() {
         return preservationProportion;
+    };
+
+    public boolean isPreserved(double proportion) {
+        if (preservationProportion == 0d) return proportion > 0d;
+        return proportion >= preservationProportion;
     };
 
     public int getColor() {
@@ -67,9 +93,14 @@ public class Contaminant {
         return absentColor;
     };
 
-    public boolean isPreserved(double proportion) {
-        if (preservationProportion == 0d) return proportion > 0d;
-        return proportion >= preservationProportion;
+    public Set<Contaminant> getChildren() {
+        if (childrenView == null) childrenView = Collections.unmodifiableSet(children);
+        return childrenView;
+    };
+
+    public Set<Contaminant> getParents() {
+        if (parentsView == null) parentsView = Collections.unmodifiableSet(parents);
+        return parentsView;
     };
 
     public ResourceLocation getLocation() {
@@ -97,5 +128,41 @@ public class Contaminant {
 
     public Component getAbsentNameColored() {
         return getAbsentName().copy().withStyle(Style.EMPTY.withColor(absentColor));
+    };
+
+    public static class ReloadListener implements ResourceManagerReloadListener {
+
+        public final RegistryAccess registryAccess;
+
+        public ReloadListener(RegistryAccess registryAccess) {
+            this.registryAccess = registryAccess;
+        };
+
+        @Override
+        public void onResourceManagerReload(ResourceManager resourceManager) {
+            Registry<Contaminant> registry = registryAccess.registryOrThrow(PetrolparkRegistries.Keys.CONTAMINANT);
+            registry.forEach(parent -> {
+                ResourceLocation parentName = registry.getKey(parent);
+
+                Queue<Contaminant> childrenToAdd = new LinkedList<>(parent.childResourceLocations.stream().map(registry::getOptional).map(o -> o.getOrThrow(() -> new JsonSyntaxException("pee"))).toList());
+
+                parent.childResourceLocations.forEach(childName -> {
+                    Contaminant child = registry.getOptional(childName).orElseThrow(() -> new JsonSyntaxException(String.format("Error in Contaminant %s: no such child '%s'", parentName.toString(), childName.toString())));
+                    
+                    
+                    child.parents.add(parent);
+                    parent.children.add(child);
+                });
+            });
+            registry.forEach(parent -> {
+                Queue<Contaminant> queue = new LinkedList<>();
+                while (!queue.isEmpty()) {
+                    Contaminant descendant = queue.poll();
+                    if (parent.children.add(descendant)) queue.addAll(descendant.getChildren());
+                };
+            });
+            IntrinsicContaminants.clear();
+        };
+
     };
 };
