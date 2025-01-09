@@ -1,6 +1,5 @@
 package com.petrolpark;
 
-import com.petrolpark.block.partial.PetrolparkPartialModels;
 import com.petrolpark.client.outline.Outliner;
 import com.petrolpark.itemdecay.DecayingItemHandler.ClientDecayingItemHandler;
 
@@ -18,6 +17,6 @@ public class PetrolparkClient {
     };
 
     public static void clientCtor(IEventBus modEventBus, IEventBus forgeEventBus) {
-        PetrolparkPartialModels.init();
+        
     };
 };

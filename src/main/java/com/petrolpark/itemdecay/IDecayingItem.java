@@ -1,6 +1,7 @@
 package com.petrolpark.itemdecay;
 
 import com.petrolpark.Petrolpark;
+import com.petrolpark.contamination.ItemContamination;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -37,6 +38,7 @@ public interface IDecayingItem {
                 if (timeDead >= 0) {
                     ItemStack product = item.getDecayProduct(stack);
                     product.setCount(stack.getCount());
+                    ItemContamination.get(product).contaminateAll(ItemContamination.get(stack).streamAllContaminants());
                     startDecay(product, timeDead);
                     return checkDecay(product);
                 };
@@ -50,7 +52,7 @@ public interface IDecayingItem {
     };
 
     public static void startDecay(ItemStack stack, long timeElapsed) {
-        if (stack.getItem() instanceof IDecayingItem item) {
+        if (stack.getItem() instanceof IDecayingItem) {
             CompoundTag tag = stack.getOrCreateTag();
             if (!tag.contains("CreationTime", Tag.TAG_LONG)) tag.putLong("CreationTime", Petrolpark.DECAYING_ITEM_HANDLER.get().getGameTime() - timeElapsed);
         };

@@ -32,7 +32,9 @@ public enum PetrolparkRecipeTypes implements IRecipeTypeInfo {
     FIRST_TIME_LUCKY_MILLING(FirstTimeLuckyMillingRecipe::new, AllRecipeTypes.MILLING::getType),
     DECAYING_ITEM_COOKING(DecayingItemCookingRecipeSerializer::new),
     MANUAL_ONLY_CRAFTING_SHAPED(ManualOnlyShapedRecipe.Serializer::new, () -> RecipeType.CRAFTING),
-    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING);
+    CONTAMINATED_ITEM_COMBINATION(() -> CombineContaminatedItemsRecipe.SERIALIZER, () -> RecipeType.CRAFTING),
+    BADGE_DUPLICATION(() -> BadgeDuplicationRecipe.BADGE_DUPLICATION, () -> RecipeType.CRAFTING),
+    ;
 
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;

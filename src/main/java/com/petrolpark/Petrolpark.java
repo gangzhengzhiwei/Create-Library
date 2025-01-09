@@ -3,7 +3,6 @@ package com.petrolpark;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
-import com.petrolpark.badge.Badge;
 import com.petrolpark.badge.Badges;
 import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.curios.Curios;
@@ -13,8 +12,6 @@ import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.recipe.PetrolparkRecipeTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,7 +20,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod(Petrolpark.MOD_ID)
 public class Petrolpark {
@@ -34,9 +30,6 @@ public class Petrolpark {
 
     public static final PetrolparkRegistrate REGISTRATE = new PetrolparkRegistrate(MOD_ID);
     public static final PetrolparkRegistrate DESTROY_REGISTRATE = CompatMods.DESTROY.registrate();
-
-    // Registries
-    public static final ResourceKey<Registry<Badge>> BADGE_REGISTRY_KEY = REGISTRATE.makeRegistry("badge", RegistryBuilder::new);
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
@@ -52,10 +45,12 @@ public class Petrolpark {
         REGISTRATE.registerEventListeners(modEventBus);
         DESTROY_REGISTRATE.registerEventListeners(modEventBus);
 
+        PetrolparkRegistries.register();
         Badges.register();
         PetrolparkRecipeTypes.register(modEventBus);
         PetrolparkBlockEntityTypes.register();
         PetrolparkBlocks.register();
+        //PetrolparkContaminants.register();
 
         // Client
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PetrolparkClient.clientCtor(modEventBus, forgeEventBus));
@@ -76,6 +71,7 @@ public class Petrolpark {
 
     private void init(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            PetrolparkItemAttributes.register();
             PetrolparkMessages.register();
         });
     };

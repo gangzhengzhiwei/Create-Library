@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.petrolpark.PetrolparkRegistries;
 import com.petrolpark.Petrolpark;
 import com.petrolpark.advancement.SimpleAdvancementTrigger;
 import com.petrolpark.badge.Badge;
@@ -35,7 +36,7 @@ public class BadgeBuilder<T extends Badge, P> extends AbstractBuilder<Badge, T, 
     };
 
     public BadgeBuilder(PetrolparkRegistrate owner, P parent, String name, BuilderCallback callback, NonNullSupplier<T> factory) {
-        super(owner, parent, name, callback, Petrolpark.BADGE_REGISTRY_KEY);
+        super(owner, parent, name, callback, PetrolparkRegistries.Keys.BADGE);
         this.factory = factory;
 
         duplicationIngredient = () -> Ingredient.EMPTY;
@@ -72,7 +73,7 @@ public class BadgeBuilder<T extends Badge, P> extends AbstractBuilder<Badge, T, 
 
     public static Map<ResourceLocation, Advancement.Builder> getAdvancements() {
         Map<ResourceLocation, Advancement.Builder> advancements = new HashMap<>();
-        for (Badge badge : Badge.badgeRegistry().getValues()) {
+        Badge.badgeRegistry().getValues().forEach(badge  -> {
             Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
             advancementBuilder
                .parent(Petrolpark.asResource("badge_root"))
@@ -90,7 +91,7 @@ public class BadgeBuilder<T extends Badge, P> extends AbstractBuilder<Badge, T, 
                     .addCriterion("get_badge", badge.advancementTrigger.instance())
                     .requirements(new String[][]{new String[]{"get_badge"}}); 
             advancements.put(new ResourceLocation(badge.getId().getNamespace(), "badge/"+badge.getId().getPath()), advancementBuilder);
-        };
+        });
         return advancements;
     };
 

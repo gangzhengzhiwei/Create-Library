@@ -3,7 +3,7 @@ package com.petrolpark.recipe.manualonly;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.PetrolparkTags.PetrolparkMenuTypeTags;
+import com.petrolpark.PetrolparkTags.MenuTypes;
 import com.petrolpark.recipe.PetrolparkRecipeTypes;
 
 import net.minecraft.core.NonNullList;
@@ -26,7 +26,7 @@ public class ManualOnlyShapedRecipe extends ShapedRecipe {
     };
 
     public static boolean isAllowed(CraftingContainer inv) {
-        return inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || PetrolparkMenuTypeTags.ALLOWS_MANUAL_ONLY_CRAFTING.matches(container.menu));
+        return inv instanceof TransientCraftingContainer container && (container.menu instanceof InventoryMenu || MenuTypes.ALLOWS_MANUAL_ONLY_CRAFTING.matches(container.menu));
     };
 
     @Override

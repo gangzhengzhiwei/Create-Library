@@ -3,8 +3,8 @@ package com.petrolpark.network;
 import java.util.function.Function;
 
 import com.petrolpark.Petrolpark;
-import com.petrolpark.network.packet.BuildTubePacket;
 import com.petrolpark.network.packet.C2SPacket;
+import com.petrolpark.tube.BuildTubePacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;

@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.petrolpark.Petrolpark;
+import com.petrolpark.PetrolparkRegistries;
 import com.petrolpark.advancement.SimpleAdvancementTrigger;
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -24,12 +24,11 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.RegistryManager;
 
 public class Badge {
 
-    public static ForgeRegistry<Badge> badgeRegistry() {
-        return RegistryManager.ACTIVE.getRegistry(Petrolpark.BADGE_REGISTRY_KEY);
+    public static final ForgeRegistry<Badge> badgeRegistry() {
+        return PetrolparkRegistries.getRegistry(PetrolparkRegistries.Keys.BADGE);
     };
 
     protected ResourceLocation id;

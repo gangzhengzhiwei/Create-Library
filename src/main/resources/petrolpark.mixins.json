@@ -6,21 +6,25 @@
     "mixins": [
         "accessor.PonderWorldAccessor",
         "accessor.SimpleRenderElementAccessor",
+        "AbstractContainerMenuMixin",
         "CrushingWheelBlockEntityMixin",
         "CrushingWheelControllerBlockEntityMixin",
         "CrushingWheelControllerBlockMixin",
+        "FluidTankMixin",
         "ItemStackMixin",
         "MillstoneBlockEntityMixin",
         "OpenEndedPipeMixin",
         "PonderUIMixin",
         "ProcessingRecipeMixin",
-        "ServerAdvancementManagerMixin"
+        "ServerAdvancementManagerMixin",
+        "SlotMixin"
     ],
     "client": [
         "accessor.OutlineEntryAccessor",
         "accessor.OutlineParamsAccessor",
         "accessor.OutlinerAccessor",
         "CreativeModeInventoryScreenMixin",
+        "GoggleOverlayRendererMixin",
         "PonderUIMixin"
     ],
     "injectors": {

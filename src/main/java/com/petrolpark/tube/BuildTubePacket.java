@@ -1,15 +1,13 @@
-package com.petrolpark.network.packet;
+package com.petrolpark.tube;
 
 import java.util.function.Supplier;
 
-import com.petrolpark.tube.ITubeBlock;
-import com.petrolpark.tube.TubeSpline;
+import com.petrolpark.network.packet.C2SPacket;
 import com.petrolpark.util.ItemHelper;
 import com.petrolpark.util.NetworkHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkEvent.Context;
@@ -58,10 +56,9 @@ public class BuildTubePacket extends C2SPacket {
         ServerPlayer player = context.getSender();
         context.enqueueWork(() -> {
             if (tubeBlock == null) return;
-            spline.validate(player.level(), player, player.getMainHandItem().getItem(), tubeBlock);
+            spline.validate(player.level(), player, block.asItem(), tubeBlock);
             if (spline.getResult().success) {
-                if (!(player.getMainHandItem().getItem() instanceof BlockItem blockItem && blockItem.getBlock() == tubeBlock)) return;
-                if (!player.getAbilities().instabuild) ItemHelper.removeItems(new InvWrapper(player.getInventory()), s -> s.is(player.getMainHandItem().getItem()), 0); // Remove required Items
+                if (!player.getAbilities().instabuild) ItemHelper.removeItems(new InvWrapper(player.getInventory()), s -> s.is(block.asItem()), tubeBlock.getItemsForTubeLength(spline.getLength())); // Remove required Items
                 tubeBlock.connectTube(player.level(), spline);
             };
         });

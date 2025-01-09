@@ -25,6 +25,18 @@
     "badge.petrolpark.translator": "Cunning Linguist",
     "badge.petrolpark.translator.description": "Make an significant contribution to the localizations of petrolpark mods",
 
+    "commands.petrolpark.contaminate.failed": "Nothing changed. Targets either have no item in their hands or the contaminant could not be applied",
+    "commands.petrolpark.contaminate.failed.entity": "%s is not a valid entity for this command",
+    "commands.petrolpark.contaminate.failed.itemless": "%s is not holding any item",
+    "commands.petrolpark.contaminate.success.multiple": "Applied contaminant %s to %s entities",
+    "commands.petrolpark.contaminate.success.single": "Applied contaminant %s to %s's item",
+
+    "contaminant.petrolpark.example": "Example Contaminant",
+    "contaminant.petrolpark.example.absent": "No Example Contaminant",
+
+    "create.item_attributes.has_contaminant": "Has contaminant: %s",
+    "create.item_attributes.has_contaminant.inverted": "Doesn't have contaminant: %s",
+
     "curios.identifier.petrolpark_badge": "Badge",
 
     "item.petrolpark.badge.awarded": "Awarded to %1$s on %2$s",
@@ -41,6 +53,7 @@
     "petrolpark.recipe.item_decay": "Item Decay",
     "petrolpark.recipe.manual_crafting": "Manual-Only Crafting",
 
+    "petrolpark.tube.connect_another": "Place another %s to connect them",
     "petrolpark.tube.title": "    Constructing %1$s %2$s",
     "petrolpark.tube.control.build": "    [%1$s] Build",
     "petrolpark.tube.control.grab_control_point": "    [Drag] Move node",

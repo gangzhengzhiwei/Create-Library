@@ -10,10 +10,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.PetrolparkClient;
 import com.petrolpark.client.key.PetrolparkKeys;
 import com.petrolpark.network.PetrolparkMessages;
-import com.petrolpark.network.packet.BuildTubePacket;
 import com.petrolpark.util.BlockFace;
 import com.petrolpark.util.RayHelper;
 import com.petrolpark.util.RayHelper.CustomHitResult;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.compat.Mods;
 import com.simibubi.create.foundation.gui.RemovedGuiUtils;
@@ -57,6 +57,7 @@ public class ClientTubePlacementHandler {
     protected static BlockFace end = null;
     protected static TubeSpline spline = null;
 
+    protected static int ttl = 0;
     protected static int targetedControlPoint = -1;
     protected static double distanceToSelectedControlPoint = 0f;
     protected static boolean draggingSelectedControlPoint = false;
@@ -66,12 +67,16 @@ public class ClientTubePlacementHandler {
     @SubscribeEvent
     public static void tick(ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || mc.player.getMainHandItem() != currentStack || currentStack.isEmpty() || (start != null && mc.level.getBlockState(start.getPos()).getBlock() != tubeBlock)) {
+        if (mc.level == null || mc.player == null || !(mc.player.getMainHandItem() == currentStack || AllItems.WRENCH.isIn(mc.player.getMainHandItem())) || currentStack.isEmpty() || (start != null && mc.level.getBlockState(start.getPos()).getBlock() != tubeBlock)) {
             cancel();
             return;
         };
-
-        if (spline == null) return;
+        if (ttl > 0) {
+            ttl--;
+        } else {
+            cancel();
+        };
+        if (!active()) return;
         // Check end blocks are still present
         if (mc.level.getBlockState(end.getPos()).getBlock() != tubeBlock) {
             cancel();
@@ -200,6 +205,7 @@ public class ClientTubePlacementHandler {
             draggingSelectedControlPoint = !draggingSelectedControlPoint;
             distanceToSelectedControlPoint = mc.player.getEyePosition().distanceTo(spline.getControlPoints().get(targetedControlPoint));
             event.setCanceled(true);
+            resetTTL();
         };
     };
 
@@ -209,6 +215,7 @@ public class ClientTubePlacementHandler {
             distanceToSelectedControlPoint = Mth.clamp(distanceToSelectedControlPoint + event.getScrollDelta() / 8d, Math.min(distanceToSelectedControlPoint, 0.5d), Math.max(distanceToSelectedControlPoint, 6d));
             relocateControlPoint();
             event.setCanceled(true);
+            resetTTL();
         };
     };
 
@@ -224,6 +231,7 @@ public class ClientTubePlacementHandler {
                     controlPointBoxes = new ArrayList<>();
                     revalidateSpline(mc);
                 };
+                resetTTL();
                 return;
             };
         };
@@ -238,30 +246,45 @@ public class ClientTubePlacementHandler {
         };
     };
 
-    public static void tryConnect(BlockFace location, ItemStack stack, ITubeBlock tubeBlock) {
+    public static void tryConnect(BlockFace location, ItemStack stack, ITubeBlock tubeBlock, boolean manualPlacement) {
+        Minecraft mc = Minecraft.getInstance();
         if (start == null) { // If placing the first Block
             currentStack = stack;
             ClientTubePlacementHandler.tubeBlock = tubeBlock;
             start = location;
             spline = null;
+            if (manualPlacement) mc.player.displayClientMessage(Component.translatable("petrolpark.tube.connect_another"), true);
+            resetTTL();
         } else if (spline == null) { // If placing the second Block
             if (stack != currentStack) {
                 cancel();
                 return;
-            }
+            };
             end = location;
             spline = new TubeSpline(start, end, tubeBlock.getTubeMaxAngle(), tubeBlock.getTubeSegmentLength(), tubeBlock.getTubeSegmentRadius());
-            spline.addControlPoint(start.getCenter().add(end.getCenter()).scale(0.5d)); //temporary
-            Minecraft mc = Minecraft.getInstance();
+            if (manualPlacement) spline.addControlPoint(start.getCenter().add(end.getCenter()).scale(0.5d));
             revalidateSpline(mc);
+            resetTTL();
         } else {
             cancel();
-            tryConnect(location, stack, tubeBlock);  
+            tryConnect(location, stack, tubeBlock, manualPlacement);  
         };
     };
 
     public static void revalidateSpline(Minecraft mc) {
         spline.validate(mc.level, mc.player, currentStack.getItem(), tubeBlock);
+    };
+
+    public static void addControlPointWithoutRevalidating(Vec3 controlPoint) {
+        if (spline != null) spline.addControlPoint(controlPoint);
+    };
+
+    public static void resetTTL() {
+        ttl = 400;
+    };
+
+    public static boolean active() {
+        return spline != null;
     };
 
     public static void cancel() {
@@ -271,6 +294,7 @@ public class ClientTubePlacementHandler {
         end = null;
         spline = null;
 
+        ttl = 0;
         targetedControlPoint = -1;
         distanceToSelectedControlPoint = 0f;
         draggingSelectedControlPoint = false;

@@ -2,6 +2,7 @@ package com.petrolpark.tube;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,4 +33,8 @@ public interface ITubeBlock {
      * @param spline
      */
     public void connectTube(Level level, TubeSpline spline);
+
+    public default boolean tryReconnect(UseOnContext context) {
+        return TubeBehaviour.get(context.getLevel(), context.getClickedPos()).map(tube -> tube.reconnect(context.getPlayer(), true)).orElse(false);
+    };
 };

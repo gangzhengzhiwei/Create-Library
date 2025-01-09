@@ -1,5 +1,6 @@
 package com.petrolpark;
 
+import com.petrolpark.contamination.Contaminant;
 import com.simibubi.create.foundation.utility.Lang;
 
 import net.minecraft.core.registries.Registries;
@@ -9,15 +10,17 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class PetrolparkTags {
-    public enum PetrolparkMenuTypeTags {
+    
+    public enum MenuTypes {
 
         ALWAYS_SHOWS_EXTENDED_INVENTORY,
         NEVER_SHOWS_EXTENDED_INVENTORY,
-        ALLOWS_MANUAL_ONLY_CRAFTING;
+        ALLOWS_MANUAL_ONLY_CRAFTING,
+        ;
 
         public final TagKey<MenuType<?>> tag;
 
-        PetrolparkMenuTypeTags() {
+        MenuTypes() {
             tag = TagKey.create(Registries.MENU, Petrolpark.asResource(Lang.asId(name())));
         };
 
@@ -31,6 +34,22 @@ public class PetrolparkTags {
 
         public boolean matches(MenuType<?> menuType) {
             return ForgeRegistries.MENU_TYPES.getHolder(menuType).orElseThrow().is(tag);
+        };
+    };
+
+    public enum Contaminants {
+
+        HIDDEN,
+        ;
+
+        public final TagKey<Contaminant> tag;
+
+        Contaminants() {
+            tag = TagKey.create(PetrolparkRegistries.Keys.CONTAMINANT, Petrolpark.asResource(Lang.asId(name())));
+        };
+
+        public boolean matches(Contaminant contaminant) {
+            return PetrolparkRegistries.getDataRegistry(PetrolparkRegistries.Keys.CONTAMINANT).getHolder(PetrolparkRegistries.getDataRegistry(PetrolparkRegistries.Keys.CONTAMINANT).getId(contaminant)).orElseThrow().is(tag);
         };
     };
 };

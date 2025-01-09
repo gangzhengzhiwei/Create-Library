@@ -24,7 +24,7 @@ public class TubeBlockItem extends BlockItem {
         InteractionResult result = super.place(context);
         if (context.getLevel().isClientSide() && result == InteractionResult.SUCCESS) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                ClientTubePlacementHandler.tryConnect(BlockFace.of(context.getClickedPos(), getConnectingFace(context)), context.getItemInHand(), tubeBlock);
+                ClientTubePlacementHandler.tryConnect(BlockFace.of(context.getClickedPos(), getConnectingFace(context)), context.getItemInHand(), tubeBlock, true);
             });
         };
         return result;

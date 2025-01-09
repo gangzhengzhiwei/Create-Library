@@ -1,18 +1,22 @@
 package com.petrolpark.tube;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.petrolpark.PetrolparkBlockEntityTypes;
 import com.petrolpark.PetrolparkBlocks;
+import com.petrolpark.util.BigItemStack;
 import com.petrolpark.util.BlockFace;
+import com.petrolpark.util.ItemHelper;
 import com.petrolpark.util.NBTHelper;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,10 +26,17 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 
 public class TubeBehaviour extends BlockEntityBehaviour {
 
@@ -86,27 +97,42 @@ public class TubeBehaviour extends BlockEntityBehaviour {
     };
 
     public void disconnect() {
+        disconnect(stack -> {
+            if (getWorld().isClientSide() || !getWorld().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) return;
+            int points = getSpline().getPoints().size();
+            int items = stack.getCount();
+            if (items / points > 0) for (Vec3 point : getSpline().getPoints()) ItemHelper.pop(getWorld(), point, stack.copyStackWithCount(items / points));
+            for (int i = 0; i < items % points; i++) ItemHelper.pop(getWorld(), getSpline().getPoints().get(i), stack.getSingleItemStack());
+        });
+    };
+
+    public void disconnect(Consumer<BigItemStack> leftoverItemsConsumer) {
         if (disconnecting) return;
         disconnecting = true;
         if (controller) {
             tubeBlockEntity.beforeTubeDisconnect();
+            // Create Items
+            leftoverItemsConsumer.accept(getRequiredStack());
+            // Disconnect other end
             get(getWorld(), otherEndPos).ifPresent(tube -> {
                 tube.tubeBlockEntity.beforeTubeDisconnect();
                 tube.otherEndPos = null;
                 tube.blockEntity.notifyUpdate();
             });
+            // Remove tube structural blocks
             if (getSpline() != null) for (BlockPos pos : getSpline().getBlockedPositions()) {
                 getWorld().destroyBlock(pos, true);
             };
             sendDestroyTubeParticles();
             playSound(true);
+            // Disconnect this end
             controller = false;
             otherEndPos = null;
             spline = null;
             middleControlPoints = Collections.emptyList();
             blockEntity.notifyUpdate();
         } else { // If the other block is the controller, disconnect that
-            get(getWorld(), otherEndPos).ifPresent(TubeBehaviour::disconnect);
+            get(getWorld(), otherEndPos).ifPresent(tube -> tube.disconnect(leftoverItemsConsumer));
         };
     };
 
@@ -120,6 +146,38 @@ public class TubeBehaviour extends BlockEntityBehaviour {
         BlockState state = blockEntity.getBlockState();
         SoundType soundType = state.getSoundType();
         getWorld().playSound(null, getPos(), destroy ? soundType.getBreakSound() : soundType.getPlaceSound(), SoundSource.BLOCKS, soundType.getVolume(), soundType.getPitch());
+    };
+
+    public boolean reconnect(Player player, boolean tryOtherIfNotController) {
+        if (!controller) {
+            if (tryOtherIfNotController) return get(getWorld(), otherEndPos).map(tube -> tube.reconnect(player, false)).orElse(false);
+            return false;
+        };
+        TubeSpline oldSpline = getSpline();
+        if (oldSpline == null) return false;
+        ItemStack stackForConstruction = getRequiredStack().getSingleItemStack();
+        disconnect(stack -> {if (!player.getAbilities().instabuild) stack.getAsStacks().forEach(player.getInventory()::placeItemBackInInventory);});
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> reconnectClient(oldSpline, stackForConstruction));
+        return true;
+    };
+
+    @OnlyIn(Dist.CLIENT)
+    public void reconnectClient(TubeSpline oldSpline, ItemStack stack) {
+        ClientTubePlacementHandler.cancel();
+        if (!(blockEntity.getBlockState().getBlock() instanceof ITubeBlock tubeBlock)) return;
+        Minecraft mc = Minecraft.getInstance();
+        ClientTubePlacementHandler.tryConnect(oldSpline.start, stack, tubeBlock, false);
+        ClientTubePlacementHandler.tryConnect(oldSpline.end, stack, tubeBlock, false);
+        if (ClientTubePlacementHandler.active()) for (Vec3 controlPoint : oldSpline.getMiddleControlPoints()) {
+            ClientTubePlacementHandler.addControlPointWithoutRevalidating(controlPoint);
+        };
+        ClientTubePlacementHandler.revalidateSpline(mc);
+    };
+
+    public BigItemStack getRequiredStack() {
+        Block block = blockEntity.getBlockState().getBlock();
+        if (getSpline() == null || !(block instanceof ITubeBlock tubeBlock)) return BigItemStack.EMPTY;
+        return new BigItemStack(block, tubeBlock.getItemsForTubeLength(getSpline().getLength()));
     };
 
     public static Optional<TubeBehaviour> get(Level level, BlockPos pos) {
