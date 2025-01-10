@@ -2,16 +2,15 @@ package com.petrolpark.contamination;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkRegistries;
+import com.petrolpark.util.GraphHelper;
+import com.petrolpark.util.GraphHelper.CircularReferenceException;
 
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -55,14 +54,17 @@ public class Contaminant {
         return PetrolparkRegistries.getDataRegistry(PetrolparkRegistries.Keys.CONTAMINANT).get(new ResourceLocation(rl.getNamespace(), path[1]));
     };
 
+    // Initial fields
     public final double preservationProportion;
     public final int color;
     public final int absentColor;
     private final List<ResourceLocation> childResourceLocations;
 
+    // Internal fields
     protected Set<Contaminant> children = new HashSet<>();
     protected Set<Contaminant> parents = new HashSet<>();
 
+    // Publicly accessible fields
     protected ResourceLocation rl;
     protected String descriptionId;
     protected String absentDescriptionId;
@@ -93,11 +95,17 @@ public class Contaminant {
         return absentColor;
     };
 
+    /**
+     * All Contaminants (not just direct children) which any Contamination automatically has if they have this Contaminant.
+     */
     public Set<Contaminant> getChildren() {
         if (childrenView == null) childrenView = Collections.unmodifiableSet(children);
         return childrenView;
     };
 
+    /**
+     * Any Contaminants (not just direct parents) which, if a Contamination has, will also belong to that Contamination.
+     */
     public Set<Contaminant> getParents() {
         if (parentsView == null) parentsView = Collections.unmodifiableSet(parents);
         return parentsView;
@@ -143,22 +151,21 @@ public class Contaminant {
             Registry<Contaminant> registry = registryAccess.registryOrThrow(PetrolparkRegistries.Keys.CONTAMINANT);
             registry.forEach(parent -> {
                 ResourceLocation parentName = registry.getKey(parent);
-
-                Queue<Contaminant> childrenToAdd = new LinkedList<>(parent.childResourceLocations.stream().map(registry::getOptional).map(o -> o.getOrThrow(() -> new JsonSyntaxException("pee"))).toList());
-
                 parent.childResourceLocations.forEach(childName -> {
                     Contaminant child = registry.getOptional(childName).orElseThrow(() -> new JsonSyntaxException(String.format("Error in Contaminant %s: no such child '%s'", parentName.toString(), childName.toString())));
-                    
-                    
                     child.parents.add(parent);
                     parent.children.add(child);
                 });
             });
             registry.forEach(parent -> {
-                Queue<Contaminant> queue = new LinkedList<>();
-                while (!queue.isEmpty()) {
-                    Contaminant descendant = queue.poll();
-                    if (parent.children.add(descendant)) queue.addAll(descendant.getChildren());
+                ResourceLocation parentName = registry.getKey(parent);
+                try {
+                    for (Contaminant descendant : GraphHelper.getAllDescendants(parent, c -> c.children)) {
+                        parent.children.add(descendant);
+                        descendant.parents.add(parent);
+                    };
+                } catch (CircularReferenceException e) {
+                    throw new JsonSyntaxException(String.format("Contaminant %s is its own descendant. Replace the circular reference with a single Contaminant", parentName));
                 };
             });
             IntrinsicContaminants.clear();

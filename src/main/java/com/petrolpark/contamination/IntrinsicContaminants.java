@@ -1,11 +1,10 @@
 package com.petrolpark.contamination;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,11 +22,11 @@ public class IntrinsicContaminants {
     };
 
     protected static <OBJECT> Set<Contaminant> get(Contamination<OBJECT, ?> contamination) {
-        return INTRINSIC_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withAllChildren(contamination.getContaminable().getIntrinsicContaminants(contamination.getType())));
+        return INTRINSIC_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withChildren(contamination.getContaminable().getIntrinsicContaminants(contamination.getType())));
     };
 
     protected static <OBJECT> Set<Contaminant> getShownIfAbsent(Contamination<OBJECT, ?> contamination) {
-        return SHOWN_IF_ABSENT_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withAllChildren(contamination.getContaminable().getShownIfAbsentContaminants(contamination.getType())));
+        return SHOWN_IF_ABSENT_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withChildren(contamination.getContaminable().getShownIfAbsentContaminants(contamination.getType())));
     };
 
     @SubscribeEvent
@@ -35,14 +34,8 @@ public class IntrinsicContaminants {
         clear();
     };
 
-    private static Set<Contaminant> withAllChildren(Set<Contaminant> contaminants) {
-        Set<Contaminant> set = new HashSet<>();
-        Queue<Contaminant> queue = new LinkedList<>(contaminants);
-        while (!queue.isEmpty()) {
-            Contaminant contaminant = queue.poll();
-            if (set.add(contaminant)) queue.addAll(contaminant.getChildren());
-        };
-        return set;
+    private static Set<Contaminant> withChildren(Set<Contaminant> contaminants) {
+        return Stream.concat(contaminants.stream(), contaminants.stream().map(Contaminant::getChildren).flatMap(Set::stream)).collect(Collectors.toSet()); 
     };
     
 };

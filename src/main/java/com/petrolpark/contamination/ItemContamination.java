@@ -20,10 +20,10 @@ public class ItemContamination extends Contamination<Item, ItemStack> {
 
     protected ItemContamination(ItemStack stack) {
         super(stack);
-        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) extrinsicOrphanContaminants.addAll(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING).stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get).toList());
-        for (Contaminant contaminant : extrinsicOrphanContaminants) {
-            extrinsicContaminants.add(contaminant);
-            extrinsicContaminants.addAll(contaminant.getChildren());
+        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) orphanContaminants.addAll(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING).stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get).toList());
+        for (Contaminant contaminant : orphanContaminants) {
+            contaminants.add(contaminant);
+            contaminants.addAll(contaminant.getChildren());
         };
     };
 
@@ -54,7 +54,7 @@ public class ItemContamination extends Contamination<Item, ItemStack> {
     @Override
     public void save() {
         stack.removeTagKey(TAG_KEY);
-        if (!extrinsicOrphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
+        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
     };
     
 };

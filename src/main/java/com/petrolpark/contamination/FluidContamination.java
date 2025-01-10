@@ -20,7 +20,7 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
 
     protected FluidContamination(FluidStack stack) {
         super(stack);
-        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) extrinsicOrphanContaminants.addAll(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING).stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get).toList());
+        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) orphanContaminants.addAll(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING).stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get).toList());
     };
 
     @Override
@@ -41,7 +41,7 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
     @Override
     public void save() {
         stack.removeChildTag(TAG_KEY);
-        if (!extrinsicOrphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
+        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
     };
 
     public static final IFluidMixer MIXER = new IFluidMixer() {
