@@ -1,7 +1,7 @@
 package com.petrolpark;
 
 import com.petrolpark.contamination.Contaminant;
-import com.simibubi.create.foundation.utility.Lang;
+import com.petrolpark.util.Lang;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;

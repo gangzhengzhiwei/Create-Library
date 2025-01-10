@@ -37,6 +37,10 @@ public class Petrolpark {
 
     public static final ThreadLocal<DecayingItemHandler> DECAYING_ITEM_HANDLER = ThreadLocal.withInitial(() -> DecayingItemHandler.DUMMY);
 
+    static {
+        PetrolparkItemDisplayContexts.register();
+    };
+
     public Petrolpark() {
         //ModLoadingContext modLoadingContext = ModLoadingContext.get();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

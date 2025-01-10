@@ -1,9 +1,12 @@
 package com.petrolpark.util;
 
+import com.petrolpark.RequiresCreate;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
+@RequiresCreate
 public class BlockFace extends com.simibubi.create.foundation.utility.BlockFace {
 
     public static BlockFace of(BlockPos pos, Direction face) {

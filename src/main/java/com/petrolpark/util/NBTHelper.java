@@ -1,9 +1,12 @@
 package com.petrolpark.util;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Objects;
 import com.petrolpark.PetrolparkRegistries;
 
 import net.minecraft.core.BlockPos;
@@ -11,6 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -23,14 +27,32 @@ public class NBTHelper {
         if (tag1 != null) eachKey: for (String key : tag1.getAllKeys()) {
             checkedKeys.add(key);
             for (String ignoredKey : ignoredKeys) if (key.equals(ignoredKey)) continue eachKey;
-            if (tag2 == null || !Objects.equal(tag1.get(key), tag2.get(key))) return false;
+            if (tag2 == null || !Objects.equals(tag1.get(key), tag2.get(key))) return false;
         };
         if (tag2 != null) eachKey: for (String key : tag2.getAllKeys()) {
             if (checkedKeys.contains(key)) continue eachKey;
             for (String ignoredKey : ignoredKeys) if (key.equals(ignoredKey)) continue eachKey;
-            if (tag1 == null || !Objects.equal(tag1.get(key), tag2.get(key))) return false;
+            if (tag1 == null || !Objects.equals(tag1.get(key), tag2.get(key))) return false;
         };
         return true;
+    };
+
+    public static <T> List<T> readCompoundList(ListTag tag, Function<CompoundTag, T> reader) {
+        return tag.stream().map(CompoundTag.class::cast).map(reader).collect(Collectors.toList());
+    };
+
+    public static <T> ListTag writeCompoundList(List<T> list, Function<T, CompoundTag> writer) {
+        ListTag tag = new ListTag();
+        list.stream().map(writer).forEach(tag::add);
+        return tag;
+    };
+
+    public static <E extends Enum<E>> E readEnum(CompoundTag tag, String key, Class<E> enumClass) {
+        return enumClass.getEnumConstants()[tag.getInt(key)];
+    };
+
+    public static <E extends Enum<E>> void writeEnum(CompoundTag tag, String key, E enumValue) {
+        tag.putInt(key, enumValue.ordinal());
     };
     
     public static Vec3 readVec3(ListTag tag, BlockPos origin) {
@@ -44,6 +66,15 @@ public class NBTHelper {
         tag.add(DoubleTag.valueOf(vec.y()));
         tag.add(DoubleTag.valueOf(vec.z()));
         return tag;
+    };
+
+    public static int readBinaryMatrix4x4(CompoundTag tag, String key) {
+        if (!tag.contains(key, Tag.TAG_SHORT)) return 0;
+        return BinaryMatrix4x4.fromShort(tag.getShort(key));
+    };
+
+    public static void writeBinaryMatrix4x4(CompoundTag tag, String key, int binaryMatrix) {
+        tag.putShort(key, BinaryMatrix4x4.asShort(binaryMatrix));
     };
 
     /**

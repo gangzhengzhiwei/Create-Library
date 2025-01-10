@@ -4,12 +4,18 @@
     "compatibilityLevel": "JAVA_17",
     "refmap": "petrolpark.refmap.json",
     "mixins": [
+        "accessor.DepotBehaviourAccessor",
         "accessor.PonderWorldAccessor",
         "accessor.SimpleRenderElementAccessor",
         "AbstractContainerMenuMixin",
+        "BeltInventoryMixin",
+        "ContraptionMixin",
         "CrushingWheelBlockEntityMixin",
         "CrushingWheelControllerBlockEntityMixin",
         "CrushingWheelControllerBlockMixin",
+        "DepotBehaviourMixin",
+        "DirectBeltInputBehaviourMixin",
+        "EjectorBlockEntityMixin",
         "FluidTankMixin",
         "ItemStackMixin",
         "MillstoneBlockEntityMixin",
@@ -17,13 +23,17 @@
         "PonderUIMixin",
         "ProcessingRecipeMixin",
         "ServerAdvancementManagerMixin",
-        "SlotMixin"
+        "SharedDepotBlockMethodsMixin",
+        "SlotMixin",
+        "TransportedItemStackMixin"
     ],
     "client": [
         "accessor.OutlineEntryAccessor",
         "accessor.OutlineParamsAccessor",
         "accessor.OutlinerAccessor",
+        "BeltRendererMixin",
         "CreativeModeInventoryScreenMixin",
+        "DepotRendererMixin",
         "GoggleOverlayRendererMixin",
         "PonderUIMixin"
     ],

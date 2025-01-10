@@ -3,7 +3,7 @@ package com.petrolpark.compat;
 import java.util.function.Supplier;
 
 import com.petrolpark.registrate.PetrolparkRegistrate;
-import com.simibubi.create.foundation.utility.Lang;
+import com.petrolpark.util.Lang;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
@@ -11,10 +11,14 @@ import net.minecraftforge.fml.loading.FMLLoader;
 
 public enum CompatMods {
 
+    CREATE,
+
     // Petrolpark Mods
+    ACADEMY,
+    CHOO_CHOO_TRADE("choochootrade"),
+    CREATE_BISTRO("createbistro"),
     DESTROY,
     PETROLS_PARTS("petrolsparts"),
-    CHOO_CHOO_TRADE("choochootrade"),
 
     // Others
     BIG_CANNONS("createbigcannons"),
