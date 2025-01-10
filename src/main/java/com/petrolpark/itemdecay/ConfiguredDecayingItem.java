@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.config.ConfigBase.ConfigInt;
 
 import net.minecraft.world.item.ItemStack;
 
+//TODO remove Create dependency
 public class ConfiguredDecayingItem extends SimpleDecayProductItem {
 
     protected final Supplier<ConfigInt> lifetime;

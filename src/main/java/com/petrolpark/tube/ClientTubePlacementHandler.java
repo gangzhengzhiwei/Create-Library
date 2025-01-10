@@ -178,8 +178,8 @@ public class ClientTubePlacementHandler {
         GRAB_CONTROL_POINT(() -> targetedControlPoint > 0 && targetedControlPoint < spline.getControlPoints().size() - 1, () -> {}, null),
         MOVE_CONTROL_POINT(() -> draggingSelectedControlPoint, () -> {}, null),
         DELETE_CONTROL_POINT(() -> targetedControlPoint > 0 && targetedControlPoint < spline.getControlPoints().size() - 1 && !draggingSelectedControlPoint, () -> {spline.removeControlPoint(targetedControlPoint);}, PetrolparkKeys.TUBE_DELETE_CONTROL_POINT),
-        ADD_CONTROL_POINT_AFTER(() -> targetedControlPoint >= 0 && targetedControlPoint < spline.getControlPoints().size() - 1 && !draggingSelectedControlPoint, () -> spline.addInterpolatedControlPoint(targetedControlPoint + 1), PetrolparkKeys.TUBE_ADD_CONTROL_POINT_AFTER),
-        ADD_CONTROL_POINT_BEFORE(() -> targetedControlPoint > 0 && targetedControlPoint < spline.getControlPoints().size(), () -> spline.addInterpolatedControlPoint(targetedControlPoint), PetrolparkKeys.TUBE_ADD_CONTROL_POINT_BEFORE),
+        ADD_CONTROL_POINT_AFTER(() -> spline.getControlPoints().size() < TubeSpline.MAX_CONTROL_POINTS && targetedControlPoint >= 0 && targetedControlPoint < spline.getControlPoints().size() - 1 && !draggingSelectedControlPoint, () -> spline.addInterpolatedControlPoint(targetedControlPoint + 1), PetrolparkKeys.TUBE_ADD_CONTROL_POINT_AFTER),
+        ADD_CONTROL_POINT_BEFORE(() -> spline.getControlPoints().size() < TubeSpline.MAX_CONTROL_POINTS && targetedControlPoint > 0 && targetedControlPoint < spline.getControlPoints().size(), () -> spline.addInterpolatedControlPoint(targetedControlPoint), PetrolparkKeys.TUBE_ADD_CONTROL_POINT_BEFORE),
         CANCEL(() -> true, ClientTubePlacementHandler::cancel, PetrolparkKeys.TUBE_CANCEL)
         ;
 

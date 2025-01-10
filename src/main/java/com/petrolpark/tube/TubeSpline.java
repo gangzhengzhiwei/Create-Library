@@ -7,6 +7,7 @@ import java.util.List;
 
 import java.util.function.Consumer;
 
+import com.petrolpark.RequiresCreate;
 import com.petrolpark.util.BlockFace;
 import com.petrolpark.util.ClampedCubicSpline;
 import com.petrolpark.util.MathsHelper;
@@ -27,7 +28,12 @@ import net.minecraft.world.phys.Vec3;
 /**
  * A Clamped Cubic Spline with each end in the middle of a Block Face
  */
+@RequiresCreate
 public class TubeSpline extends ClampedCubicSpline {
+
+    public static final double MAX_LENGTH = 32d;
+    public static final double MAX_VOLUME = 256d;
+    public static final int MAX_CONTROL_POINTS = 16;
 
     // Inputs
     public final BlockFace start;
@@ -106,18 +112,29 @@ public class TubeSpline extends ClampedCubicSpline {
             return;
         } else if (block.getTubeConnectingFace(level, start.getPos(), startState) != start.getFace() || block.getTubeConnectingFace(level, end.getPos(), endState) != end.getFace()) {
             result = TubePlacementResult.WRONG_FACE;
-            return;
-        };
-        //TODO too long
-        if (totalLength <= 1d || start.equals(end)) {
-            result = TubePlacementResult.TOO_SHORT;
-        } else if (MathsHelper.volume(occupiedVolume) > 256d) {
+        } else if (controlPoints.size() > MAX_CONTROL_POINTS) {
+            result = TubePlacementResult.TOO_MANY_POINTS;
+        } else if (totalLength >= MAX_LENGTH) {
             result = TubePlacementResult.TOO_LONG;
+        } else if (totalLength <= 1d || start.equals(end)) {
+            result = TubePlacementResult.TOO_SHORT;
+        } else if (MathsHelper.volume(occupiedVolume) > MAX_VOLUME) {
+            result = TubePlacementResult.TOO_BIG;
         } else if (tooSharp) {
             result = TubePlacementResult.TOO_SHARP;
         } else if (!checkCanAfford(player, requiredItem, block)) {
             result = TubePlacementResult.TOO_POOR;
         } else {
+            int i = 1;
+            for (Vec3 controlPoint : controlPoints) {
+                for (int j = i; j < controlPoints.size(); j++) {
+                    if (controlPoint.distanceToSqr(controlPoints.get(j)) < segmentLength * segmentLength) {
+                        result = TubePlacementResult.POINTS_TOO_CLOSE;
+                        return;
+                    };
+                };
+                i++;
+            };
             checkBlocked(level, p -> {});
         };
     };
@@ -144,7 +161,7 @@ public class TubeSpline extends ClampedCubicSpline {
 
     public static enum TubePlacementResult {
         // In order of decreasing priority
-        WRONG_BLOCK, WRONG_FACE, TOO_LONG, TOO_SHORT, TOO_BIG, TOO_SHARP, TOO_POOR, BLOCKED, SUCCESS(true),
+        WRONG_BLOCK, WRONG_FACE, TOO_MANY_POINTS, TOO_LONG, TOO_SHORT, TOO_BIG, TOO_SHARP, TOO_POOR, POINTS_TOO_CLOSE, BLOCKED, SUCCESS(true),
         ;
 
         public final boolean success;

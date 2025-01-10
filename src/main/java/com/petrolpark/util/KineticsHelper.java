@@ -4,12 +4,14 @@ import java.util.List;
 
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.petrolpark.RequiresCreate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 
+@RequiresCreate
 public class KineticsHelper {
     
 	public static void addLargeCogwheelPropagationLocations(BlockPos pos, List<BlockPos> neighbours) {

@@ -69,7 +69,9 @@
     "petrolpark.tube.result.too_long": "Too long",
     "petrolpark.tube.result.too_short": "Too short",
     "petrolpark.tube.result.too_big": "Tube stretches too far",
+    "petrolpark.tube.result.points_too_close": "Nodes too close together",
     "petrolpark.tube.result.too_poor": "Not enough %1$s",
+    "petrolpark.tube.result.too_many_points": "Too many control points",
     "petrolpark.tube.result.wrong_block": "Can't connect those types of blocks",
     "petrolpark.tube.result.wrong_face": "Can't connect on that face"
 }
