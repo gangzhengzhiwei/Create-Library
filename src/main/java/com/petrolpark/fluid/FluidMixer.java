@@ -53,10 +53,16 @@ public class FluidMixer {
      * Mix one Fluid Stack into another.
      * @param maxResultAmount
      * @param baseFluidStack
-     * @param addedFluidStack The amount of this will be mutated; use a copy
+     * @param addedFluidStack The amount of this will be set to the amount which was actually added, so pass a copy
      * @return A new Fluid Stack
      */
     public static FluidStack mixIn(FluidStack baseFluidStack, FluidStack addedFluidStack, int maxResultAmount, FluidAction action) {
+        if (baseFluidStack.isEmpty()) {
+            addedFluidStack.setAmount(Math.min(addedFluidStack.getAmount(), maxResultAmount));
+            return addedFluidStack.copy();
+        } else if (addedFluidStack.isEmpty()) {
+            return baseFluidStack;
+        };
         IFluidMixer currentMixer = null;
         int currentPriority = 0;
         List<IFluidMixer> afterMixers = new ArrayList<>(MIXERS.size());
@@ -69,11 +75,9 @@ public class FluidMixer {
             };
         };
         FluidStack result = baseFluidStack;
-        FluidStack toAdd = addedFluidStack;
         if (currentMixer != null) {
-            toAdd.setAmount(currentMixer.getAmountToMixIn(maxResultAmount, baseFluidStack, toAdd));
-            addedFluidStack.shrink(toAdd.getAmount());
-            result = currentMixer.mix2(baseFluidStack, toAdd);
+            addedFluidStack.setAmount(currentMixer.getAmountToMixIn(maxResultAmount, baseFluidStack, addedFluidStack));
+            result = currentMixer.mix2(baseFluidStack, addedFluidStack);
         };
         if (afterMixers.isEmpty() || action.simulate()) return result;
         FluidStack[] fluidStacks = new FluidStack[]{baseFluidStack, addedFluidStack};

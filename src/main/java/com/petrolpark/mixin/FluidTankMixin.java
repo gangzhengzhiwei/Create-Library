@@ -25,6 +25,6 @@ public abstract class FluidTankMixin implements IFluidHandler, IFluidTank {
         FluidStack toAdd = resource.copy();
         FluidStack result = FluidMixer.mixIn(getFluid(), toAdd, getCapacity(), action);
         if (action.execute()) setFluid(result);
-        return resource.getAmount() - toAdd.getAmount();
+        return toAdd.getAmount();
     };
 };
