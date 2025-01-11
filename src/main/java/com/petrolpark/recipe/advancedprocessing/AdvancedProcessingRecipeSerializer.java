@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.petrolpark.Petrolpark;
+import com.petrolpark.RequiresCreate;
 import com.petrolpark.recipe.advancedprocessing.IBiomeSpecificProcessingRecipe.BiomeValue;
 import com.petrolpark.recipe.advancedprocessing.firsttimelucky.IFirstTimeLuckyRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
 
+@RequiresCreate
 public class AdvancedProcessingRecipeSerializer<T extends ProcessingRecipe<?>> extends ProcessingRecipeSerializer<T> {
 
     public AdvancedProcessingRecipeSerializer(ProcessingRecipeFactory<T> factory) {

@@ -3,7 +3,8 @@ package com.petrolpark.recipe.advancedprocessing.firsttimelucky;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.petrolpark.block.entity.behaviour.AbstractRememberPlacerBehaviour;
+import com.petrolpark.RequiresCreate;
+import com.petrolpark.compat.create.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.recipe.RecipeFinder;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.util.LazyOptional;
 
+@RequiresCreate
 public class FirstTimeLuckyRecipesBehaviour extends AbstractRememberPlacerBehaviour {
 
     public static final BehaviourType<FirstTimeLuckyRecipesBehaviour> TYPE = new BehaviourType<>();

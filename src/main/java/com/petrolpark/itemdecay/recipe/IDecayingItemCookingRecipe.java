@@ -22,7 +22,7 @@ public interface IDecayingItemCookingRecipe<R extends AbstractCookingRecipe> ext
     public static ItemStack withDecay(ItemStack stack) {
         if (!Petrolpark.DECAYING_ITEM_HANDLER.get().isClientSide()) {
             ItemStack copy = stack.copy();
-            IDecayingItem.startDecay(copy, 0l);
+            IDecayingItem.startDecay(copy);
             return copy;
         } else {
             return stack;

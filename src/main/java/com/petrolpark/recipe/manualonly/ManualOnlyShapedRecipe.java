@@ -3,8 +3,8 @@ package com.petrolpark.recipe.manualonly;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
+import com.petrolpark.PetrolparkRecipeTypes;
 import com.petrolpark.PetrolparkTags.MenuTypes;
-import com.petrolpark.recipe.PetrolparkRecipeTypes;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;

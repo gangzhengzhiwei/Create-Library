@@ -1,14 +1,21 @@
 package com.petrolpark.registrate;
 
 import com.petrolpark.badge.Badge;
-import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
-public class PetrolparkRegistrate extends CreateRegistrate {
+import net.minecraftforge.eventbus.api.IEventBus;
+
+public class PetrolparkRegistrate extends AbstractRegistrate<PetrolparkRegistrate> {
 
     public PetrolparkRegistrate(String modid) {
         super(modid);
     };
+
+    @Override
+	public PetrolparkRegistrate registerEventListeners(IEventBus bus) {
+		return super.registerEventListeners(bus);
+	};
 
     public BadgeBuilder<Badge, PetrolparkRegistrate> badge(String name) {
         return badge(name, Badge::new);  

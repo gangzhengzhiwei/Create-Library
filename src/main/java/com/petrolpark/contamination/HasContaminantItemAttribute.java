@@ -3,12 +3,14 @@ package com.petrolpark.contamination;
 import java.util.List;
 
 import com.petrolpark.PetrolparkRegistries;
+import com.petrolpark.RequiresCreate;
 import com.petrolpark.util.NBTHelper;
 import com.simibubi.create.content.logistics.filter.ItemAttribute;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+@RequiresCreate
 public class HasContaminantItemAttribute implements ItemAttribute {
 
     public final Contaminant contaminant;

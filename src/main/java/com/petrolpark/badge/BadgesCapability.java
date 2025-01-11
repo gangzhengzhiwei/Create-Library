@@ -11,7 +11,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.simibubi.create.foundation.utility.Pair;
+import com.petrolpark.util.Pair;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

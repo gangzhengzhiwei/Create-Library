@@ -7,9 +7,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.simibubi.create.foundation.utility.RegisteredObjects;
+import com.petrolpark.PetrolparkRegistries;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -138,7 +139,9 @@ public interface BlockIngredient<T extends BlockIngredient<T>> {
 
         @Override
         public void write(FriendlyByteBuf buffer) {
-            buffer.writeResourceLocation(RegisteredObjects.getKeyOrThrow(block));
+            ResourceLocation rl = PetrolparkRegistries.getRegistry(Registries.BLOCK).getKey(block);
+            if (rl == null) throw new IllegalArgumentException(String.format("Block %s does not exist", block.getName().getString()));
+            buffer.writeResourceLocation(rl);
         };
 
         protected static class Type implements BlockIngredientType<SingleBlockIngredient> {

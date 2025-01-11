@@ -52,7 +52,7 @@ public class TubeSpline extends ClampedCubicSpline {
     };
 
     public TubeSpline(BlockFace start, BlockFace end, List<Vec3> middleControlPoints, double maxAngle, double segmentLength, double segmentRadius) {
-        super(start.getCenter(), end.getCenter(), new Vec3(start.getFace().step()), new Vec3(end.getOppositeFace().step()), segmentLength);
+        super(start.getCenter(), end.getCenter(), new Vec3(start.getFace().step()), new Vec3(end.getFace().getOpposite().step()), segmentLength);
         this.start = start;
         this.end = end;
         this.maxAngle = maxAngle;

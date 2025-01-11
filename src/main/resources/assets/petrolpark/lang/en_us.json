@@ -25,14 +25,18 @@
     "badge.petrolpark.translator": "Cunning Linguist",
     "badge.petrolpark.translator.description": "Make an significant contribution to the localizations of petrolpark mods",
 
+    "biome.petrolpark.unknown": "Unknown Biome",
+
     "commands.petrolpark.contaminate.failed": "Nothing changed. Targets either have no item in their hands or the contaminant could not be applied",
     "commands.petrolpark.contaminate.failed.entity": "%s is not a valid entity for this command",
     "commands.petrolpark.contaminate.failed.itemless": "%s is not holding any item",
     "commands.petrolpark.contaminate.success.multiple": "Applied contaminant %s to %s entities",
     "commands.petrolpark.contaminate.success.single": "Applied contaminant %s to %s's item",
 
-    "contaminant.petrolpark.example": "Example Contaminant",
-    "contaminant.petrolpark.example.absent": "No Example Contaminant",
+    "contaminant.petrolpark.example_child": "Example (Child)",
+    "contaminant.petrolpark.example_child.absent": "No Example (Child)",
+    "contaminant.petrolpark.example_parent": "Example (Parent)",
+    "contaminant.petrolpark.example_parent.absent": "No Example (Parent)",
 
     "create.item_attributes.has_contaminant": "Has contaminant: %s",
     "create.item_attributes.has_contaminant.inverted": "Doesn't have contaminant: %s",

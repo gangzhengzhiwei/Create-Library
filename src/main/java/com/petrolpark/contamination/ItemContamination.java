@@ -51,7 +51,7 @@ public class ItemContamination extends Contamination<Item, ItemStack> {
     @Override
     public void save() {
         stack.removeTagKey(TAG_KEY);
-        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
+        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeNBT());
     };
     
 };

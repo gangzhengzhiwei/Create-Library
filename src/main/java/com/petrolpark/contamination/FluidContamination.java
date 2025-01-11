@@ -6,7 +6,6 @@ import com.petrolpark.fluid.FluidMixer.IFluidMixer;
 import com.petrolpark.util.FluidHelper;
 
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -15,7 +14,7 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
     public static final String TAG_KEY = "Contamination";
 
     public static IContamination<?, ?> get(FluidStack stack) {
-        if (!Contaminables.FORGE_FLUID.isContaminable(stack)) return new FluidContamination(stack);
+        if (!Contaminables.FLUID.isContaminable(stack)) return new FluidContamination(stack);
         return IncontaminableContamination.INSTANCE;
     };
 
@@ -25,12 +24,12 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
 
     protected FluidContamination(FluidStack stack) {
         super(stack);
-        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) orphanContaminants.addAll(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING).stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get).toList());
+        if (stack.getTag() != null && stack.getTag().contains(TAG_KEY, Tag.TAG_LIST)) readNBT(stack.getTag().getList(TAG_KEY, Tag.TAG_STRING));
     };
 
     @Override
     public Contaminable<Fluid, FluidStack> getContaminable() {
-        return Contaminables.FORGE_FLUID;
+        return Contaminables.FLUID;
     };
 
     @Override
@@ -46,7 +45,7 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
     @Override
     public void save() {
         stack.removeChildTag(TAG_KEY);
-        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeToNBT());
+        if (!orphanContaminants.isEmpty()) stack.getOrCreateTag().put(TAG_KEY, writeNBT());
     };
 
     public static final IFluidMixer MIXER = new IFluidMixer() {

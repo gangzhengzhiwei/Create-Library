@@ -2,7 +2,8 @@ package com.petrolpark.tube;
 
 import java.util.function.Consumer;
 
-import com.petrolpark.PetrolparkBlockEntityTypes;
+import com.petrolpark.RequiresCreate;
+import com.petrolpark.compat.create.CreateBlockEntityTypes;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.client.particle.ParticleEngine;
@@ -18,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 
+@RequiresCreate
 public class TubeStructuralBlock extends Block implements IBE<TubeStructuralBlockEntity> {
 
     public TubeStructuralBlock(Properties properties) {
@@ -48,7 +50,7 @@ public class TubeStructuralBlock extends Block implements IBE<TubeStructuralBloc
 
     @Override
     public BlockEntityType<? extends TubeStructuralBlockEntity> getBlockEntityType() {
-        return PetrolparkBlockEntityTypes.TUBE_STRUCTURE.get();
+        return CreateBlockEntityTypes.TUBE_STRUCTURE.get();
     };
 
     @OnlyIn(Dist.CLIENT)

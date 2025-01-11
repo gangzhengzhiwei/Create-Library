@@ -7,14 +7,14 @@ import java.util.function.Supplier;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.petrolpark.PetrolparkClient;
+import com.petrolpark.RequiresCreate;
 import com.petrolpark.client.key.PetrolparkKeys;
+import com.petrolpark.compat.create.CreateClient;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.util.BlockFace;
 import com.petrolpark.util.RayHelper;
 import com.petrolpark.util.RayHelper.CustomHitResult;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.compat.Mods;
 import com.simibubi.create.foundation.gui.RemovedGuiUtils;
 import com.simibubi.create.foundation.gui.Theme;
@@ -45,10 +45,9 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(Dist.CLIENT)
+@RequiresCreate
 public class ClientTubePlacementHandler {
     
     protected static ItemStack currentStack = ItemStack.EMPTY;
@@ -111,7 +110,7 @@ public class ClientTubePlacementHandler {
         // Render Control Points
         for (int i = 0; i < controlPointBoxes.size(); i++) {
             AABB controlPointBox = controlPointBoxes.get(i);
-            PetrolparkClient.OUTLINER.showBox(Pair.of("control_point", i), controlPointBox.inflate(i == targetedControlPoint ? 1 / 16d : 0d), 2).colored(color);
+            CreateClient.OUTLINER.showBox(Pair.of("control_point", i), controlPointBox.inflate(i == targetedControlPoint ? 1 / 16d : 0d), 2).colored(color);
         };
 
         // Show message

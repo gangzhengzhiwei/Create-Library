@@ -47,6 +47,11 @@ public final class IncontaminableContamination implements IContamination<Object,
     };
 
     @Override
+    public Stream<Contaminant> streamOrphanExtrinsicContaminants() {
+        return Stream.empty();
+    };
+
+    @Override
     public boolean contaminate(Contaminant contaminant) {
         return false;
     };

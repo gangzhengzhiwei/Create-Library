@@ -2,6 +2,7 @@ package com.petrolpark.tube;
 
 import java.util.function.Supplier;
 
+import com.petrolpark.RequiresCreate;
 import com.petrolpark.network.packet.C2SPacket;
 import com.petrolpark.util.ItemHelper;
 import com.petrolpark.util.NetworkHelper;
@@ -13,6 +14,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@RequiresCreate
 public class BuildTubePacket extends C2SPacket {
 
     public final Block block;

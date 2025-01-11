@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.petrolpark.badge.BadgeItem;
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.curios.renderer.CuriosRenderers;
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
 
@@ -26,9 +27,9 @@ public class Curios {
 		return entity.getCapability(CuriosCapability.INVENTORY).map(ICuriosItemHandler::getCurios);
 	};
     
-    public static void init(IEventBus modEventBus, IEventBus forgeEventBus) {
+    public static void ctor(IEventBus modEventBus, IEventBus forgeEventBus) {
 
-        GogglesItem.addIsWearingPredicate(wearingCurioPredicate(stack -> CuriosSetup.ENGINEERS_GOGGLES.stream().anyMatch(b -> b.get().get().equals(stack.getItem())), "head"));
+        CompatMods.CREATE.executeIfInstalled(() -> () -> GogglesItem.addIsWearingPredicate(wearingCurioPredicate(stack -> CuriosSetup.ENGINEERS_GOGGLES.stream().anyMatch(b -> b.get().get().equals(stack.getItem())), "head")));
 
         // Rendering
         modEventBus.addListener(Curios::onClientSetup);

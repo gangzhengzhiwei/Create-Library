@@ -2,11 +2,12 @@ package com.petrolpark.itemdecay;
 
 import java.util.function.Supplier;
 
+import com.petrolpark.RequiresCreate;
 import com.simibubi.create.foundation.config.ConfigBase.ConfigInt;
 
 import net.minecraft.world.item.ItemStack;
 
-//TODO remove Create dependency
+@RequiresCreate
 public class ConfiguredDecayingItem extends SimpleDecayProductItem {
 
     protected final Supplier<ConfigInt> lifetime;

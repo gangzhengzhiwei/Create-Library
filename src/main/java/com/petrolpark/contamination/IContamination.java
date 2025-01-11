@@ -69,6 +69,15 @@ public interface IContamination<OBJECT, OBJECT_STACK> {
 
     public Stream<Contaminant> streamAllContaminants();
 
+    /**
+     * Stream all Contaminants in this Contamination that:<ul>
+     * <li>Are not {@link IntrinsicContaminants intrinsic}
+     * <li>Have no children in this Contamination</ul>
+     * Note that this is the minimum set of Contaminants needed to uniquely define a Contamination.
+     * @return Distinct Stream of Contaminants 
+     */
+    public Stream<Contaminant> streamOrphanExtrinsicContaminants();
+
     public default Stream<Contaminant> streamShownContaminants() {
         Set<Contaminant> shownIfAbsent = IntrinsicContaminants.getShownIfAbsent(this);
         return streamAllContaminants().dropWhile(PetrolparkTags.Contaminants.HIDDEN::matches).dropWhile(shownIfAbsent::contains);

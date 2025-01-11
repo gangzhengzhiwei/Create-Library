@@ -1,13 +1,10 @@
 package com.petrolpark.util;
 
-import com.petrolpark.RequiresCreate;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
-@RequiresCreate
-public class BlockFace extends com.simibubi.create.foundation.utility.BlockFace {
+public class BlockFace extends Pair<BlockPos, Direction> {
 
     public static BlockFace of(BlockPos pos, Direction face) {
         return new BlockFace(pos, face);
@@ -17,9 +14,20 @@ public class BlockFace extends com.simibubi.create.foundation.utility.BlockFace 
         super(first, second);
     };
 
-    @Override
+    public BlockPos getPos() {
+		return getFirst();
+	};
+
+	public Direction getFace() {
+		return getSecond();
+	};
+
+    public BlockPos getConnectedPos() {
+        return getPos().relative(getFace());
+    };
+
     public BlockFace getOpposite() {
-        return new BlockFace(getConnectedPos(), getOppositeFace());
+        return new BlockFace(getConnectedPos(), getFace().getOpposite());
     };
 
     public Vec3 getCenter() {

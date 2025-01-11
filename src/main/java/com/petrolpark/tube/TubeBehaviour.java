@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.petrolpark.PetrolparkBlockEntityTypes;
-import com.petrolpark.PetrolparkBlocks;
+import com.petrolpark.RequiresCreate;
+import com.petrolpark.compat.create.CreateBlockEntityTypes;
+import com.petrolpark.compat.create.CreateBlocks;
 import com.petrolpark.util.BigItemStack;
 import com.petrolpark.util.BlockFace;
 import com.petrolpark.util.ItemHelper;
@@ -38,6 +39,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 
+@RequiresCreate
 public class TubeBehaviour extends BlockEntityBehaviour {
 
     public static final BehaviourType<TubeBehaviour> TYPE = new BehaviourType<>();
@@ -84,7 +86,7 @@ public class TubeBehaviour extends BlockEntityBehaviour {
         this.spline = spline;
         middleControlPoints = getSpline().getMiddleControlPoints();
         for (BlockPos pos : getSpline().getBlockedPositions()) {
-            getWorld().setBlock(pos, PetrolparkBlocks.TUBE_STRUCTURE.getDefaultState(), 3);
+            getWorld().setBlock(pos, CreateBlocks.TUBE_STRUCTURE.getDefaultState(), 3);
         };
         initializationTicks = 3; // Delay to link structural blocks to the controller
         get(getWorld(), otherEndPos).ifPresent(tube -> {
@@ -191,7 +193,7 @@ public class TubeBehaviour extends BlockEntityBehaviour {
         if (initializationTicks > 0) {
             initializationTicks--;
             if (controller && initializationTicks == 1 && getSpline() != null) for (BlockPos pos : getSpline().getBlockedPositions()) {
-                getWorld().getBlockEntity(pos, PetrolparkBlockEntityTypes.TUBE_STRUCTURE.get()).ifPresent(be -> be.setController(getPos()));
+                getWorld().getBlockEntity(pos, CreateBlockEntityTypes.TUBE_STRUCTURE.get()).ifPresent(be -> be.setController(getPos()));
             };
             tubeBlockEntity.invalidateTubeRenderBoundingBox();
         };

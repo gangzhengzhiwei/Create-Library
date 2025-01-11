@@ -19,6 +19,7 @@ public enum CompatMods {
     CREATE_BISTRO("createbistro"),
     DESTROY,
     PETROLS_PARTS("petrolsparts"),
+    PQAULITY,
 
     // Others
     BIG_CANNONS("createbigcannons"),
@@ -37,8 +38,12 @@ public enum CompatMods {
         this.id = id;
     };
 
+    public static boolean isLoading(String modid) {
+        return FMLLoader.getLoadingModList().getModFileById(modid) != null;
+    };
+
     public boolean isLoading() {
-        return FMLLoader.getLoadingModList().getModFileById(id) != null;
+       return isLoading(id);
     };
 
     public boolean isLoaded() {

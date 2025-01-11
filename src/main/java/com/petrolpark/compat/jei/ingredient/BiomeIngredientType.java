@@ -1,6 +1,7 @@
 package com.petrolpark.compat.jei.ingredient;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +50,8 @@ public class BiomeIngredientType implements IIngredientType<Biome> {
         };
 
         public Component getDisplayNameComponent(Biome ingredient) {
+            ResourceLocation rl = getResourceLocation(ingredient);
+            if (rl == null) return Component.translatable("biome.petrolpark.unknown");
             return Component.translatable(getResourceLocation(ingredient).toLanguageKey("biome"));
         };
 
@@ -85,9 +88,11 @@ public class BiomeIngredientType implements IIngredientType<Biome> {
 
         @Override
         public List<Component> getTooltip(Biome ingredient, TooltipFlag tooltipFlag) {
+            ResourceLocation rl = HELPER.getResourceLocation(ingredient);
+            if (rl == null) return Collections.emptyList();
             List<Component> tooltip = new ArrayList<>(tooltipFlag.isAdvanced() ? 2 : 1);
             tooltip.add(HELPER.getDisplayNameComponent(ingredient));
-            if (tooltipFlag.isAdvanced()) tooltip.add(Component.literal(HELPER.getResourceLocation(ingredient).toString()).withStyle(ChatFormatting.DARK_GRAY));
+            if (tooltipFlag.isAdvanced()) tooltip.add(Component.literal(rl.toString()).withStyle(ChatFormatting.DARK_GRAY));
             return tooltip;
         };
 

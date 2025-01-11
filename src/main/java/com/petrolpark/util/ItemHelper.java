@@ -10,8 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 
-//TODO remove Create dependence
-public class ItemHelper extends com.simibubi.create.foundation.item.ItemHelper {
+public class ItemHelper {
 
     public static boolean equalIgnoringTags(ItemStack stack1, ItemStack stack2, String ...ignoredTagKeys) {
         ItemStack trueStack1 = IDecayingItem.checkDecay(stack1);

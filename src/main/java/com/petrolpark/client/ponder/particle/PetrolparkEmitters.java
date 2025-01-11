@@ -2,7 +2,7 @@ package com.petrolpark.client.ponder.particle;
 
 import java.util.Random;
 
-import com.petrolpark.mixin.accessor.PonderWorldAccessor;
+import com.petrolpark.mixin.compat.create.accessor.client.PonderWorldAccessor;
 import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.ponder.instruction.EmitParticlesInstruction.Emitter;
 

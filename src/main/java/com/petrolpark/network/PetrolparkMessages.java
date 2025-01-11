@@ -4,14 +4,15 @@ import java.util.function.Function;
 
 import com.petrolpark.Petrolpark;
 import com.petrolpark.network.packet.C2SPacket;
-import com.petrolpark.tube.BuildTubePacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PetrolparkMessages {
+
     private static SimpleChannel INSTANCE;
     private static int packetID = 0;
 
@@ -20,16 +21,14 @@ public class PetrolparkMessages {
     };
 
     public static void register() {
-        SimpleChannel net = NetworkRegistry.ChannelBuilder
+        INSTANCE = NetworkRegistry.ChannelBuilder
             .named(Petrolpark.asResource("messages"))
             .networkProtocolVersion(() -> "1.0")
             .clientAcceptedVersions(s -> true)
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
-    
-        INSTANCE = net;
 
-        addC2SPacket(net, BuildTubePacket.class, BuildTubePacket::new);
+        MinecraftForge.EVENT_BUS.post(new RegisterPetrolparkMessagesEvent());
     };
 
     // public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
@@ -40,8 +39,8 @@ public class PetrolparkMessages {
     //         .add();
     // };
 
-    public static <T extends C2SPacket> void addC2SPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
-        net.messageBuilder(clazz, id(), NetworkDirection.PLAY_TO_SERVER)
+    public static <T extends C2SPacket> void addC2SPacket(Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
+        INSTANCE.messageBuilder(clazz, id(), NetworkDirection.PLAY_TO_SERVER)
             .decoder(decoder)
             .encoder(T::toBytes)
             .consumerMainThread(T::handle)

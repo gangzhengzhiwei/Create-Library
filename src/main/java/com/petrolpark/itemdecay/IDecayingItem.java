@@ -51,6 +51,10 @@ public interface IDecayingItem {
         return decayingItem.getLifetime(decayingItemStack) + decayingItemTag.getLong("CreationTime") - Petrolpark.DECAYING_ITEM_HANDLER.get().getGameTime();
     };
 
+    public static void startDecay(ItemStack stack) {
+        startDecay(stack, 0l);
+    };
+
     public static void startDecay(ItemStack stack, long timeElapsed) {
         if (stack.getItem() instanceof IDecayingItem) {
             CompoundTag tag = stack.getOrCreateTag();

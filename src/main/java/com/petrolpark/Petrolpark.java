@@ -5,11 +5,12 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.petrolpark.badge.Badges;
 import com.petrolpark.compat.CompatMods;
+import com.petrolpark.compat.create.Create;
 import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
 import com.petrolpark.itemdecay.DecayingItemHandler;
 import com.petrolpark.network.PetrolparkMessages;
-import com.petrolpark.recipe.PetrolparkRecipeTypes;
+import com.petrolpark.recipe.IPetrolparkRecipeTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
 
 import net.minecraft.resources.ResourceLocation;
@@ -49,33 +50,28 @@ public class Petrolpark {
         REGISTRATE.registerEventListeners(modEventBus);
         DESTROY_REGISTRATE.registerEventListeners(modEventBus);
 
+        // Registration
         PetrolparkRegistries.register();
         Badges.register();
-        PetrolparkRecipeTypes.register(modEventBus);
-        PetrolparkBlockEntityTypes.register();
-        PetrolparkBlocks.register();
-        //PetrolparkContaminants.register();
+        IPetrolparkRecipeTypes.register(modEventBus);
 
         // Client
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PetrolparkClient.clientCtor(modEventBus, forgeEventBus));
 
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        forgeEventBus.register(this);
     
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::init);
 
-        // JEI compat
-        if (CompatMods.JEI.isLoading()) {
-            forgeEventBus.register(ITickableCategory.ClientEvents.class);
-        };
-
-        CompatMods.CURIOS.executeIfInstalled(() -> () -> Curios.init(modEventBus, forgeEventBus));
+        // Compat
+        if (CompatMods.JEI.isLoading()) forgeEventBus.register(ITickableCategory.ClientEvents.class);
+        CompatMods.CREATE.executeIfInstalled(() -> () -> Create.ctor(modEventBus, forgeEventBus));
+        CompatMods.CURIOS.executeIfInstalled(() -> () -> Curios.ctor(modEventBus, forgeEventBus));
     };
 
     private void init(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            PetrolparkItemAttributes.register();
             PetrolparkMessages.register();
         });
     };

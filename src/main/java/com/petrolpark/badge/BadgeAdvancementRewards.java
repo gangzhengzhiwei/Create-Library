@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import com.petrolpark.Petrolpark;
-import com.simibubi.create.foundation.utility.Pair;
+import com.petrolpark.util.Pair;
 
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.commands.CommandFunction;

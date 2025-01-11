@@ -1,0 +1,44 @@
+package com.petrolpark.contamination;
+
+import net.minecraft.nbt.ListTag;
+
+/**
+ * A {@link Contamination} not tied to any specific object. When these are used, the developer will have to manage loading and saving them themselves.
+ */
+public class GenericContamination extends Contamination<Object, Object> {
+
+    public GenericContamination() {
+        super(new Object());
+    };
+
+    public GenericContamination(ListTag tag) {
+        this();
+        if (tag != null) readNBT(tag);
+    };
+
+    @Override
+    @Deprecated
+    public Contaminable<Object, Object> getContaminable() {
+        return Contaminables.GENERIC;
+    };
+
+    @Override
+    @Deprecated
+    public Object getType() {
+        return stack;
+    };
+
+    @Override
+    @Deprecated
+    public double getAmount() {
+        return 1d;
+    };
+
+    /**
+     * @deprecated Generic Contaminations must be saved externally.
+     */
+    @Override
+    @Deprecated
+    public final void save() {};
+    
+};

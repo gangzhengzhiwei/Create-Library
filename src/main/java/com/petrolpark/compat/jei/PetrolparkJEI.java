@@ -11,11 +11,11 @@ import com.petrolpark.compat.jei.category.DecayingItemCategory.DecayingItemRecip
 import com.petrolpark.compat.jei.category.ManualOnlyCategory;
 import com.petrolpark.compat.jei.category.builder.PetrolparkCategoryBuilder;
 import com.petrolpark.compat.jei.ingredient.BiomeIngredientType;
+import com.petrolpark.mixin.compat.jei.client.JustEnoughItemsClientMixin;
 import com.petrolpark.recipe.manualonly.ManualOnlyShapedRecipe;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 
 import mezz.jei.api.IModPlugin;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -32,7 +32,10 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 
-@JeiPlugin
+/**
+ * For now, this library's JEI plugin relies heavily on Create, so is set up to load only when Create is loaded.
+ * This is done with {@link JustEnoughItemsClientMixin} instead of annotating this class.
+ */
 public class PetrolparkJEI implements IModPlugin {
 
     private static final List<CreateRecipeCategory<?>> ALL_CATEGORIES = new ArrayList<>(2);

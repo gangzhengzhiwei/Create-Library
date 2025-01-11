@@ -5,6 +5,8 @@ import java.util.HashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.petrolpark.RequiresCreate;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,6 +21,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
+@RequiresCreate
 @AutoRegisterCapability
 public class FirstTimeLuckyRecipesCapability extends HashSet<ResourceLocation> {
 

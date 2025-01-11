@@ -2,9 +2,6 @@ package com.petrolpark.client.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.petrolpark.Petrolpark;
-import com.simibubi.create.foundation.gui.UIRenderHelper;
-import com.simibubi.create.foundation.utility.Color;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -62,12 +59,6 @@ public enum PetrolparkGuiTexture implements IGuiTexture {
 	@OnlyIn(Dist.CLIENT)
 	public void render(GuiGraphics graphics, int x, int y) {
 		graphics.blit(location, x, y, startX, startY, width, height, textureWidth, textureHeight);
-	};
-
-	@OnlyIn(Dist.CLIENT)
-	public void render(GuiGraphics graphics, int x, int y, Color c) {
-		bind();
-		UIRenderHelper.drawColoredTexture(graphics, c, x, y, 1, startX, startY, width, height, textureWidth, textureHeight);
 	};
 
     @Override

@@ -2,6 +2,7 @@ package com.petrolpark.tube;
 
 import java.util.List;
 
+import com.petrolpark.RequiresCreate;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 
@@ -12,6 +13,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+@RequiresCreate
 public class TubeStructuralBlockEntity extends SmartBlockEntity {
 
     protected BlockPos controllerPos;

@@ -1,11 +1,13 @@
 package com.petrolpark.recipe.advancedprocessing.firsttimelucky;
 
+import com.petrolpark.RequiresCreate;
 import com.simibubi.create.content.kinetics.millstone.MillingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeParams;
 
 /**
  * Milling recipes which guarantee all chance outputs the first time they are done.
  */
+@RequiresCreate
 public class FirstTimeLuckyMillingRecipe extends MillingRecipe implements IFirstTimeLuckyRecipe<MillingRecipe> {
 
     public FirstTimeLuckyMillingRecipe(ProcessingRecipeParams params) {

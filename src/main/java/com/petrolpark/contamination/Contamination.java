@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class Contamination<OBJECT, OBJECT_STACK> implements IContamination<OBJECT, OBJECT_STACK> {
 
@@ -45,6 +47,11 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> implements IContaminat
     @Override
     public final Stream<Contaminant> streamAllContaminants() {
         return Stream.concat(IntrinsicContaminants.get(this).stream(), contaminants.stream());
+    };
+
+    @Override
+    public final Stream<Contaminant> streamOrphanExtrinsicContaminants() {
+        return orphanContaminants.stream();
     };
 
     @Override
@@ -106,7 +113,11 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> implements IContaminat
         return true;
     };
 
-    public ListTag writeToNBT() {
+    public void readNBT(ListTag contaminationTag) {
+        contaminateAll(contaminationTag.stream().map(Tag::getAsString).map(ResourceLocation::new).map(Contaminant::get));
+    };
+
+    public ListTag writeNBT() {
         ListTag tag = new ListTag();
         orphanContaminants.forEach(c -> tag.add(StringTag.valueOf(c.getLocation().toString())));
         return tag;

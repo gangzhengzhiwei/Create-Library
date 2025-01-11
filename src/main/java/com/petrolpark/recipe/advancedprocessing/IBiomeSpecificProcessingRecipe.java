@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import com.petrolpark.RequiresCreate;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -13,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
+@RequiresCreate
 public interface IBiomeSpecificProcessingRecipe {
     
     public void setAllowedBiomes(Set<BiomeValue> biomes);

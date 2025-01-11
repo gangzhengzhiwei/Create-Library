@@ -6,7 +6,8 @@ import org.joml.Vector4f;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.petrolpark.mixin.accessor.OutlineParamsAccessor;
+import com.petrolpark.RequiresCreate;
+import com.petrolpark.mixin.compat.create.accessor.client.OutlineParamsAccessor;
 import com.simibubi.create.foundation.outliner.Outline;
 import com.simibubi.create.foundation.render.RenderTypes;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
@@ -14,6 +15,7 @@ import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+@RequiresCreate
 public class CuboidOutline extends Outline {
 
     protected final Vector3f start = new Vector3f(0f, 0f, 0f);
