@@ -2,8 +2,6 @@ package com.petrolpark.contamination;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -12,14 +10,7 @@ import java.util.stream.Stream;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 
-/**
- * A specific instance of a contaminable object, with the specific Contaminants that object posseses.
- */
-public abstract class Contamination<OBJECT, OBJECT_STACK> {
-
-    public static Optional<Contamination<?, ?>> get(Object object) {
-        return Contaminables.streamContaminables().map(c -> c.getContamination(object)).filter(Objects::nonNull).findFirst().map(c -> (Contamination<?, ?>)c);
-    };
+public abstract class Contamination<OBJECT, OBJECT_STACK> implements IContamination<OBJECT, OBJECT_STACK> {
 
     protected final OBJECT_STACK stack;
     
@@ -36,30 +27,27 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         this.stack = stack;
     };
 
-    public abstract Contaminable<OBJECT, OBJECT_STACK> getContaminable();
-    
-    public abstract OBJECT getType();
-
-    public abstract double getAmount();
-
-    public abstract void save();
-
+    @Override
     public final boolean has(Contaminant contaminant) {
         return IntrinsicContaminants.get(this).contains(contaminant) || contaminants.contains(contaminant);
     };
 
+    @Override
     public final boolean hasAnyContaminant() {
         return !IntrinsicContaminants.get(this).isEmpty() || hasAnyExtrinsicContaminant();
     };
 
+    @Override
     public final boolean hasAnyExtrinsicContaminant() {
         return !contaminants.isEmpty();
     };
 
+    @Override
     public final Stream<Contaminant> streamAllContaminants() {
         return Stream.concat(IntrinsicContaminants.get(this).stream(), contaminants.stream());
     };
 
+    @Override
     public final boolean contaminate(Contaminant contaminant) {
         if (IntrinsicContaminants.get(this).contains(contaminant)) return false;
         if (!contaminants.add(contaminant)) return false;
@@ -70,11 +58,7 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         return true;
     };
 
-    /**
-     * Add several Contaminants, and 
-     * @param contaminantsStream
-     * @return
-     */
+    @Override
     public final boolean contaminateAll(Stream<Contaminant> contaminantsStream) {
         boolean changed = !contaminantsStream
             .dropWhile(IntrinsicContaminants.get(this)::contains) // Don't include intrinsic Contaminants
@@ -89,13 +73,7 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         return changed;
     };
 
-    /**
-     * Remove a Contaminant and any {@link Contaminant#getChildren() children} it has that don't belong to another parent.
-     * If the Contaminant has any parents in this Contamination, it will not be removed.
-     * @param contaminant
-     * @return Whether this Contamination changed
-     * @see Contamination#decontaminateOnly(Contaminant) Don't remove children
-     */
+    @Override
     public final boolean decontaminate(Contaminant contaminant) {
         if (IntrinsicContaminants.get(this).contains(contaminant)) return false;
         if (!orphanContaminants.remove(contaminant)) return false;
@@ -107,13 +85,7 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         return true;
     };
 
-    /**
-     * Remove a Contaminant, but not any of its children.
-     * If the Contaminant has any parents in this Contamination, it will not be removed.
-     * @param contaminant
-     * @return Whether this Contamination changed (the Contaminant was removed)
-     * @see Contamination#decontaminate(Contaminant) Remove all children
-     */
+    @Override
     public final boolean decontaminateOnly(Contaminant contaminant) {
         if (IntrinsicContaminants.get(this).contains(contaminant)) return false;
         if (!orphanContaminants.remove(contaminant)) return false;
@@ -125,10 +97,7 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         return true;
     };
 
-    /**
-     * Remove all extrinsic Contaminants.
-     * @return Whether this Contamination changed (whether it had any extrinsic Contaminants)
-     */
+    @Override
     public final boolean fullyDecontaminate() {
         if (orphanContaminants.isEmpty()) return false;
         orphanContaminants.clear();
@@ -143,3 +112,4 @@ public abstract class Contamination<OBJECT, OBJECT_STACK> {
         return tag;
     };
 };
+

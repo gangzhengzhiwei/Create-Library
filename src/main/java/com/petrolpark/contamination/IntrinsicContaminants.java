@@ -21,11 +21,11 @@ public class IntrinsicContaminants {
         SHOWN_IF_ABSENT_CONTAMINANTS.clear();  
     };
 
-    protected static <OBJECT> Set<Contaminant> get(Contamination<OBJECT, ?> contamination) {
+    protected static <OBJECT> Set<Contaminant> get(IContamination<OBJECT, ?> contamination) {
         return INTRINSIC_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withChildren(contamination.getContaminable().getIntrinsicContaminants(contamination.getType())));
     };
 
-    protected static <OBJECT> Set<Contaminant> getShownIfAbsent(Contamination<OBJECT, ?> contamination) {
+    protected static <OBJECT> Set<Contaminant> getShownIfAbsent(IContamination<OBJECT, ?> contamination) {
         return SHOWN_IF_ABSENT_CONTAMINANTS.computeIfAbsent(contamination.getType(), obj -> withChildren(contamination.getContaminable().getShownIfAbsentContaminants(contamination.getType())));
     };
 

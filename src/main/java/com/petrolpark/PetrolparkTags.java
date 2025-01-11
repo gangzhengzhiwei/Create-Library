@@ -7,9 +7,47 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class PetrolparkTags {
+
+    public enum Items {
+
+        INCONTAMINABLE,
+        CONTAMINABLE_BLOCK,
+        ;
+
+        public final TagKey<Item> tag;
+
+        Items() {
+            tag = TagKey.create(Registries.ITEM, Petrolpark.asResource(Lang.asId(name())));
+        };
+
+        public boolean matches(ItemStack stack) {
+            return stack.is(tag);
+        };
+    };
+
+    public enum Fluids {
+
+        INCONTAMINABLE,
+        ;
+
+        public final TagKey<Fluid> tag;
+
+        Fluids() {
+            tag = TagKey.create(Registries.FLUID, Petrolpark.asResource(Lang.asId(name())));
+        };
+
+        @SuppressWarnings("deprecation")
+        public boolean matches(FluidStack stack) {
+            return stack.getFluid().is(tag);
+        };
+    };
     
     public enum MenuTypes {
 

@@ -1,12 +1,16 @@
 package com.petrolpark.contamination;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.petrolpark.PetrolparkTags;
+
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -25,11 +29,41 @@ public class Contaminables {
         return CONTAMINABLES.stream();
     };
 
+    public static final Contaminable<Object, Object> NOT = new Contaminable<Object,Object> () {
+
+        @Override
+        public boolean isContaminable(Object stack) {
+            return false;
+        };
+
+        @Override
+        public IContamination<Object, Object> getContamination(Object stack) {
+            return IncontaminableContamination.INSTANCE;
+        };
+
+        @Override
+        public Set<Contaminant> getIntrinsicContaminants(Object object) {
+            return Collections.emptySet();
+        };
+
+        @Override
+        public Set<Contaminant> getShownIfAbsentContaminants(Object object) {
+            return Collections.emptySet();
+        };
+        
+    };
+
     public static final Contaminable<Item, ItemStack> ITEM = new Contaminable<>() {
 
         @Override
-        public Contamination<Item, ItemStack> getContamination(Object stack) {
-            if (stack instanceof ItemStack itemStack) return new ItemContamination(itemStack);
+        public boolean isContaminable(ItemStack stack) {
+            if (stack.isEmpty()) return false;
+            return stack.getItem() instanceof BlockItem ? !PetrolparkTags.Items.INCONTAMINABLE.matches(stack) : PetrolparkTags.Items.CONTAMINABLE_BLOCK.matches(stack);
+        };
+
+        @Override
+        public ItemContamination getContamination(Object stack) {
+            if (stack instanceof ItemStack itemStack && isContaminable(itemStack)) return new ItemContamination(itemStack);
             return null;
         };
 
@@ -50,8 +84,13 @@ public class Contaminables {
     public static final Contaminable<Fluid, FluidStack> FORGE_FLUID = new Contaminable<>() {
 
         @Override
-        public Contamination<Fluid, FluidStack> getContamination(Object stack) {
-            if (stack instanceof FluidStack fluidStack) return new FluidContamination(fluidStack);
+        public boolean isContaminable(FluidStack stack) {
+            return !stack.isEmpty() && !PetrolparkTags.Fluids.INCONTAMINABLE.matches(stack);
+        };
+
+        @Override
+        public FluidContamination getContamination(Object stack) {
+            if (stack instanceof FluidStack fluidStack && isContaminable(fluidStack)) return new FluidContamination(fluidStack);
             return null;
         };
 
@@ -68,6 +107,7 @@ public class Contaminables {
     };
 
     static {
+        register(NOT);
         register(ITEM);
         register(FORGE_FLUID);
     };

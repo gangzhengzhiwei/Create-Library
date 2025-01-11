@@ -1,10 +1,10 @@
 package com.petrolpark.contamination;
 
+import java.util.stream.Stream;
+
 import com.petrolpark.fluid.FluidMixer.IFluidMixer;
 import com.petrolpark.util.FluidHelper;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -14,8 +14,13 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
 
     public static final String TAG_KEY = "Contamination";
 
-    public static FluidContamination get(FluidStack stack) {
-        return new FluidContamination(stack);
+    public static IContamination<?, ?> get(FluidStack stack) {
+        if (!Contaminables.FORGE_FLUID.isContaminable(stack)) return new FluidContamination(stack);
+        return IncontaminableContamination.INSTANCE;
+    };
+
+    public static void perpetuate(Stream<FluidStack> inputs, FluidStack output) {
+        IContamination.perpetuate(inputs, output, FluidContamination::get);
     };
 
     protected FluidContamination(FluidStack stack) {
@@ -78,17 +83,7 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
 
         @Override
         public void afterMix(FluidStack result, FluidStack... fluidStacks) {
-            Object2DoubleMap<Contaminant> amounts = new Object2DoubleArrayMap<>();
-            double totalAmount = 0;
-            for (FluidStack fluidStack : fluidStacks) {
-                totalAmount += fluidStack.getAmount();
-                get(fluidStack).streamAllContaminants().forEach(c -> amounts.merge(c, fluidStack.getAmount(), Double::sum));
-            };
-            FluidContamination contamination = get(result);
-            contamination.fullyDecontaminate();
-            for (Object2DoubleArrayMap.Entry<Contaminant> entry : amounts.object2DoubleEntrySet()) {
-                if (entry.getKey().isPreserved(entry.getDoubleValue() / totalAmount)) contamination.contaminate(entry.getKey());
-            };
+            perpetuate(Stream.of(fluidStacks), result);
         };
         
     };

@@ -3,12 +3,10 @@ package com.petrolpark.recipe;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonObject;
-import com.petrolpark.contamination.Contaminant;
+import com.petrolpark.contamination.IContamination;
 import com.petrolpark.contamination.ItemContamination;
 import com.petrolpark.util.ItemHelper;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -47,19 +45,18 @@ public class CombineContaminatedItemsRecipe extends CustomRecipe {
 
     @Override
     public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
-        Object2DoubleMap<Contaminant> amounts = new Object2DoubleArrayMap<>();
-        int totalItems = 0;
+        ItemStack result = ItemStack.EMPTY;
+        int count = 0;
         for (ItemStack stack : container.getItems()) {
-            if (stack.isEmpty()) continue;
-            totalItems++;
-            ItemContamination.get(stack).streamAllContaminants().forEach(c -> amounts.merge(c, 1d, Double::sum));
+            if (!stack.isEmpty()) {
+                count++;
+                if (result.isEmpty()) result = stack;
+            };
         };
-        ItemStack result = container.getItems().stream().dropWhile(ItemStack::isEmpty).findFirst().get().copyWithCount(totalItems);
-        ItemContamination contamination = ItemContamination.get(result);
+        result = result.copyWithCount(count);
+        IContamination<?, ?> contamination = ItemContamination.get(result);
         contamination.fullyDecontaminate();
-        for (Object2DoubleArrayMap.Entry<Contaminant> entry : amounts.object2DoubleEntrySet()) {
-            if (entry.getKey().isPreserved(entry.getDoubleValue() / (double)totalItems)) contamination.contaminate(entry.getKey());
-        };
+        ItemContamination.perpetuateSingle(container.getItems().stream(), result);
         return result;
     };
 

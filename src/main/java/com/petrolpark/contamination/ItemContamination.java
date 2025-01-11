@@ -1,9 +1,6 @@
 package com.petrolpark.contamination;
 
-import java.util.Set;
 import java.util.stream.Stream;
-
-import com.petrolpark.PetrolparkTags;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +11,17 @@ public class ItemContamination extends Contamination<Item, ItemStack> {
 
     public static final String TAG_KEY = "Contamination";
 
-    public static ItemContamination get(ItemStack stack) {
+    public static IContamination<?, ?> get(ItemStack stack) {
+        if (!Contaminables.ITEM.isContaminable(stack)) return IncontaminableContamination.INSTANCE;
         return new ItemContamination(stack);
+    };
+
+    public static final void perpetuateSingle(Stream<ItemStack> inputs, ItemStack output) {
+        perpetuate(inputs.map(stack -> stack.copyWithCount(1)), output);
+    };
+
+    public static final void perpetuate(Stream<ItemStack> inputs, ItemStack output) {
+        IContamination.perpetuate(inputs.dropWhile(ItemStack::isEmpty), output, ItemContamination::get);
     };
 
     protected ItemContamination(ItemStack stack) {
@@ -25,15 +31,6 @@ public class ItemContamination extends Contamination<Item, ItemStack> {
             contaminants.add(contaminant);
             contaminants.addAll(contaminant.getChildren());
         };
-    };
-
-    public Stream<Contaminant> streamShownContaminants() {
-        Set<Contaminant> shownIfAbsent = IntrinsicContaminants.getShownIfAbsent(this);
-        return streamAllContaminants().dropWhile(PetrolparkTags.Contaminants.HIDDEN::matches).dropWhile(shownIfAbsent::contains);
-    };
-
-    public Stream<Contaminant> streamShownAbsentContaminants() {
-        return IntrinsicContaminants.getShownIfAbsent(this).stream().dropWhile(this::has).dropWhile(PetrolparkTags.Contaminants.HIDDEN::matches);
     };
 
     @Override

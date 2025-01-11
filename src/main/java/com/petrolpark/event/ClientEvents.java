@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.petrolpark.PetrolparkClient;
 import com.petrolpark.contamination.Contaminant;
+import com.petrolpark.contamination.IContamination;
 import com.petrolpark.contamination.ItemContamination;
 import com.petrolpark.tube.ClientTubePlacementHandler;
 import com.simibubi.create.foundation.render.SuperRenderTypeBuffer;
@@ -27,7 +28,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         if (event.getEntity() == null) return; // Don't populate the Intrinsics map before the world has been loaded, as the Tags have not been loaded
-        ItemContamination contamination = ItemContamination.get(event.getItemStack());
+        IContamination<?, ?> contamination = ItemContamination.get(event.getItemStack());
         contamination.streamShownContaminants().map(Contaminant::getNameColored).forEach(event.getToolTip()::add);
         contamination.streamShownAbsentContaminants().map(Contaminant::getAbsentNameColored).forEach(event.getToolTip()::add);
     };

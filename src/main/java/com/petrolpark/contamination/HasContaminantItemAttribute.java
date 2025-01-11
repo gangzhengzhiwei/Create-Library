@@ -24,7 +24,7 @@ public class HasContaminantItemAttribute implements ItemAttribute {
 
     @Override
     public List<ItemAttribute> listAttributesOf(ItemStack stack) {
-        ItemContamination contamination = ItemContamination.get(stack);
+        IContamination<?, ?> contamination = ItemContamination.get(stack);
         List<ItemAttribute> list = contamination.streamAllContaminants().map(HasContaminantItemAttribute::new).map(ItemAttribute.class::cast).toList();
         IntrinsicContaminants.getShownIfAbsent(contamination).forEach(c -> {if (!contamination.has(contaminant)) list.add(new HasContaminantItemAttribute(c));});
         return list;
