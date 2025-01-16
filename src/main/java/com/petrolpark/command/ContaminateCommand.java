@@ -6,7 +6,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkRegistries;
 import com.petrolpark.contamination.Contaminant;
 import com.petrolpark.contamination.ItemContamination;
@@ -45,9 +44,7 @@ public class ContaminateCommand {
             if (!itemStack.isEmpty()) {
                try {
                   if (ItemContamination.get(itemStack).contaminate(contaminant)) i++;
-               } catch (Throwable e) {
-                  Petrolpark.LOGGER.error("pee", e);
-               };
+               } catch (Throwable e) {};
                
             } else if (targets.size() == 1) {
                throw ERROR_NO_ITEM.create(livingEntity.getName().getString());

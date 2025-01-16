@@ -14,12 +14,16 @@ public class FluidContamination extends Contamination<Fluid, FluidStack> {
     public static final String TAG_KEY = "Contamination";
 
     public static IContamination<?, ?> get(FluidStack stack) {
-        if (!Contaminables.FLUID.isContaminable(stack)) return new FluidContamination(stack);
+        if (!Contaminables.FLUID.isContaminableStack(stack)) return new FluidContamination(stack);
         return IncontaminableContamination.INSTANCE;
     };
 
     public static void perpetuate(Stream<FluidStack> inputs, FluidStack output) {
-        IContamination.perpetuate(inputs, output, FluidContamination::get);
+        perpetuate(inputs, Stream.of(output));
+    };
+
+    public static void perpetuate(Stream<FluidStack> inputs, Stream<FluidStack> outputs) {
+        IContamination.perpetuate(inputs, outputs, FluidContamination::get);
     };
 
     protected FluidContamination(FluidStack stack) {

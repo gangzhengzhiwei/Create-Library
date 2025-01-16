@@ -27,12 +27,12 @@ description='''Common code for petrolpark's Create add-ons.'''
     ordering="NONE"
     side="BOTH"
     
-# [[dependencies.petrolpark]]
-#	modId="create"
-#	mandatory=false
-#	versionRange="[0.5.1.h,)"
-#	ordering="AFTER"
-#	side="BOTH"
+ [[dependencies.petrolpark]]
+	modId="create"
+	mandatory=false
+	versionRange="[0.5.1.h,)"
+	ordering="AFTER"
+	side="BOTH"
 
 [[dependencies.petrolpark]]
     modId="jei"

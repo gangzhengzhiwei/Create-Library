@@ -7,8 +7,15 @@ import net.minecraft.nbt.ListTag;
  */
 public class GenericContamination extends Contamination<Object, Object> {
 
+    private final Runnable onSave;
+
     public GenericContamination() {
+        this(() -> {});
+    };
+
+    public GenericContamination(Runnable onSave) {
         super(new Object());
+        this.onSave = onSave;
     };
 
     public GenericContamination(ListTag tag) {
@@ -39,6 +46,8 @@ public class GenericContamination extends Contamination<Object, Object> {
      */
     @Override
     @Deprecated
-    public final void save() {};
+    public final void save() {
+        onSave.run();
+    };
     
 };

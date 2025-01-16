@@ -1,4 +1,4 @@
-package com.petrolpark.recipe;
+package com.petrolpark.recipe.contamination;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-public class CombineContaminatedItemsRecipe extends CustomRecipe {
+public class CombineContaminatedItemsRecipe extends CustomRecipe implements IHandleContaminationMyself<CraftingContainer> {
 
     public static final Serializer SERIALIZER = new Serializer();
 
@@ -68,6 +68,11 @@ public class CombineContaminatedItemsRecipe extends CustomRecipe {
     @Override
     public RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
+    };
+
+    @Override
+    public boolean contaminationHandled(CraftingContainer container, RegistryAccess registryAccess) {
+        return true;
     };
 
     public static class Serializer implements RecipeSerializer<CombineContaminatedItemsRecipe> {

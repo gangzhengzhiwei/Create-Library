@@ -8,9 +8,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.simibubi.create.foundation.item.TooltipHelper;
-import com.simibubi.create.foundation.item.TooltipHelper.Palette;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -57,7 +54,7 @@ public class BadgeItem extends Item {
             tooltipComponents.add(Component.translatable("item.petrolpark.badge.unknown").withStyle(ChatFormatting.GRAY));
             return;
         };
-        tooltipComponents.addAll(TooltipHelper.cutTextComponent(badge.getDescription(), Palette.STANDARD_CREATE));
+        tooltipComponents.add(badge.getDescription().copy().setStyle(PRIMARY));
         tooltipComponents.add(Component.translatable("item.petrolpark.badge.awarded", Component.literal(tag.getString("Player")).setStyle(HIGHLIGHT), Component.literal(df.format(new Date(tag.getLong("Date")))).setStyle(HIGHLIGHT)).setStyle(PRIMARY));
     };
 

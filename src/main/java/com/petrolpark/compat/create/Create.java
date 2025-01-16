@@ -3,6 +3,7 @@ package com.petrolpark.compat.create;
 import com.petrolpark.RequiresCreate;
 import com.petrolpark.compat.create.block.entity.behaviour.AbstractRememberPlacerBehaviour;
 import com.petrolpark.compat.create.event.CreateCommonEvents;
+import com.petrolpark.compat.create.loot.CreateGlobalLootModifierSerializers;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,6 +18,7 @@ public class Create {
         // Registrations
         CreateBlockEntityTypes.register();
         CreateBlocks.register();
+        CreateGlobalLootModifierSerializers.register();
 
         // Event Bus Subscribers
         modEventBus.addListener(Create::init);

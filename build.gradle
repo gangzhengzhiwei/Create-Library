@@ -56,7 +56,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            //arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=create.mixins.json'
             arg '-mixin.config=petrolpark.mixins.json'
             arg '-mixin.config=flywheel.mixins.json'
             property 'forge.logging.console.level', 'info'
@@ -69,7 +69,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run/server')
-            //arg '-mixin.config=create.mixins.json'
+            arg '-mixin.config=create.mixins.json'
             arg '-mixin.config=petrolpark.mixins.json'
             property 'forge.logging.console.level', 'info'
             mods {
@@ -82,7 +82,7 @@ minecraft {
         data {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
-            // property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'debug'
             args '--mod', 'petrolpark', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
             mods {
                 petrolpark {
@@ -149,10 +149,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     
     // Create
-    compileOnly fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
 
     // Flywheel
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
 
     // Registrate
     implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")

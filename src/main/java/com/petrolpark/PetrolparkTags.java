@@ -13,6 +13,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -56,6 +58,11 @@ public class PetrolparkTags {
             tag = TagKey.create(Registries.ITEM, Petrolpark.asResource(Lang.asId(name())));
         };
 
+        @SuppressWarnings("deprecation")
+        public boolean matches(Item item) {
+            return item.builtInRegistryHolder().is(tag);
+        };
+
         public boolean matches(ItemStack stack) {
             return stack.is(tag);
         };
@@ -73,8 +80,33 @@ public class PetrolparkTags {
         };
 
         @SuppressWarnings("deprecation")
+        public boolean matches(Fluid fluid) {
+            return fluid.is(tag);
+        };
+
+        @SuppressWarnings("deprecation")
         public boolean matches(FluidStack stack) {
             return stack.getFluid().is(tag);
+        };
+    };
+
+    public enum BlockEntityTypes {
+
+        CONTAMINABLE_KINETIC,
+        ;
+
+        public final TagKey<BlockEntityType<?>> tag;
+
+        BlockEntityTypes() {
+            tag = TagKey.create(Registries.BLOCK_ENTITY_TYPE, Petrolpark.asResource(Lang.asId(name())));
+        };
+
+        public boolean matches(BlockEntity blockEntity) {
+            return matches(blockEntity.getType());
+        };
+
+        public boolean matches(BlockEntityType<?> blockEntityType) {
+            return ForgeRegistries.BLOCK_ENTITY_TYPES.getHolder(blockEntityType).orElseThrow().is(tag);
         };
     };
     
@@ -107,12 +139,17 @@ public class PetrolparkTags {
     public enum Contaminants {
 
         HIDDEN,
+        NOT_PRESERVED_CRUSHING("not_preserved/crushing")
         ;
 
         public final TagKey<Contaminant> tag;
 
         Contaminants() {
             tag = TagKey.create(PetrolparkRegistries.Keys.CONTAMINANT, Petrolpark.asResource(Lang.asId(name())));
+        };
+
+        Contaminants(String path) {
+            tag = TagKey.create(PetrolparkRegistries.Keys.CONTAMINANT, Petrolpark.asResource(path));
         };
 
         public boolean matches(Contaminant contaminant) {

@@ -1,4 +1,4 @@
-package com.petrolpark.mixin.compat.create;
+package com.petrolpark.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -20,6 +20,7 @@ public abstract class FluidTankMixin implements IFluidHandler, IFluidTank {
     @Overwrite(
         remap = false
     )
+    @SuppressWarnings("overwrite")
     public int fill(FluidStack resource, FluidAction action) {
         if (resource.isEmpty() || !isFluidValid(resource)) return 0;
         FluidStack toAdd = resource.copy();

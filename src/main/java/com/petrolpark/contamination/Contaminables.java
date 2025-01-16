@@ -42,14 +42,18 @@ public class Contaminables {
     public static final Contaminable<Item, ItemStack> ITEM = new Contaminable<>() {
 
         @Override
-        public boolean isContaminable(ItemStack stack) {
-            if (stack.isEmpty()) return false;
-            return stack.getItem() instanceof BlockItem ? !PetrolparkTags.Items.INCONTAMINABLE.matches(stack) : PetrolparkTags.Items.CONTAMINABLE_BLOCKS.matches(stack);
+        public boolean isContaminable(Item object) {
+            return object instanceof BlockItem ? PetrolparkTags.Items.CONTAMINABLE_BLOCKS.matches(object) : !PetrolparkTags.Items.INCONTAMINABLE.matches(object);
+        };
+
+        @Override
+        public boolean isContaminableStack(ItemStack stack) {
+            return !stack.isEmpty() && isContaminable(stack.getItem());
         };
 
         @Override
         public ItemContamination getContamination(Object stack) {
-            if (stack instanceof ItemStack itemStack && isContaminable(itemStack)) return new ItemContamination(itemStack);
+            if (stack instanceof ItemStack itemStack && isContaminableStack(itemStack)) return new ItemContamination(itemStack);
             return null;
         };
 
@@ -70,13 +74,18 @@ public class Contaminables {
     public static final Contaminable<Fluid, FluidStack> FLUID = new Contaminable<>() {
 
         @Override
-        public boolean isContaminable(FluidStack stack) {
-            return !stack.isEmpty() && !PetrolparkTags.Fluids.INCONTAMINABLE.matches(stack);
+        public boolean isContaminable(Fluid object) {
+            return !PetrolparkTags.Fluids.INCONTAMINABLE.matches(object);
+        };
+
+        @Override
+        public boolean isContaminableStack(FluidStack stack) {
+            return !stack.isEmpty() && isContaminable(stack.getFluid());
         };
 
         @Override
         public FluidContamination getContamination(Object stack) {
-            if (stack instanceof FluidStack fluidStack && isContaminable(fluidStack)) return new FluidContamination(fluidStack);
+            if (stack instanceof FluidStack fluidStack && isContaminableStack(fluidStack)) return new FluidContamination(fluidStack);
             return null;
         };
 

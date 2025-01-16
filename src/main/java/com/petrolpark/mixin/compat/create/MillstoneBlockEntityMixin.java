@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.petrolpark.PetrolparkConfig;
+import com.petrolpark.contamination.IContamination;
+import com.petrolpark.contamination.ItemContamination;
+import com.petrolpark.itemdecay.IDecayingItem;
 import com.petrolpark.recipe.advancedprocessing.firsttimelucky.FirstTimeLuckyRecipesBehaviour;
 import com.petrolpark.recipe.advancedprocessing.firsttimelucky.IFirstTimeLuckyRecipe;
 import com.simibubi.create.AllRecipeTypes;
@@ -25,10 +30,16 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 @Mixin(MillstoneBlockEntity.class)
-public abstract class MillstoneBlockEntityMixin extends KineticBlockEntity{
+public abstract class MillstoneBlockEntityMixin extends KineticBlockEntity {
+
+    @Unique
+    ItemStack lastItemProcessed;
 
     @Shadow
     MillingRecipe lastRecipe;
+
+    @Shadow
+    ItemStackHandler inputInv;
 
     @Shadow
     ItemStackHandler outputInv;
@@ -52,6 +63,18 @@ public abstract class MillstoneBlockEntityMixin extends KineticBlockEntity{
      */
     @Inject(
         method = "Lcom/simibubi/create/content/kinetics/millstone/MillstoneBlockEntity;process()V",
+        at = @At("HEAD"),
+        remap = false
+    )
+    public void inProcessStart(CallbackInfo ci) {
+        lastItemProcessed = inputInv.getStackInSlot(0).copy();
+    };
+
+    /**
+     * Allow first-time lucky milling recipes to guarantee outputs the first time they are done by a player.
+     */
+    @Inject(
+        method = "Lcom/simibubi/create/content/kinetics/millstone/MillstoneBlockEntity;process()V",
         at = @At(
             value = "INVOKE",
             target = "Lcom/simibubi/create/content/kinetics/millstone/MillingRecipe;rollResults()Ljava/util/List;"
@@ -60,14 +83,27 @@ public abstract class MillstoneBlockEntityMixin extends KineticBlockEntity{
         remap = false
     )
     @SuppressWarnings("unchecked")
-    public void inProcess(CallbackInfo ci) {
+    public void inProcessEnd(CallbackInfo ci) {
         FirstTimeLuckyRecipesBehaviour behaviour = getBehaviour(FirstTimeLuckyRecipesBehaviour.TYPE);
+        List<ItemStack> results;
+
         if (behaviour != null && lastRecipe instanceof IFirstTimeLuckyRecipe ftlr) {
-            List<ItemStack> results = ftlr.rollLuckyResults(behaviour.getPlayer());
-            results.forEach(stack -> ItemHandlerHelper.insertItemStacked(outputInv, stack, false));
-            award(AllAdvancements.MILLSTONE);
-            notifyUpdate();
-            ci.cancel();
+            results = ftlr.rollLuckyResults(behaviour.getPlayer());
+        } else {
+            results = lastRecipe.rollResults();
         };
+
+        if (PetrolparkConfig.SERVER.createCrushingRecipesPropagateContaminants.get() && lastItemProcessed != null) {
+            IContamination<?, ?> inputContamination = ItemContamination.get(lastItemProcessed);
+            results.stream().map(ItemContamination::get).forEach(c -> c.contaminateAll(inputContamination.streamAllContaminants()));
+        };
+
+        results.forEach(stack -> {
+            IDecayingItem.startDecay(stack);
+            ItemHandlerHelper.insertItemStacked(outputInv, stack, false);
+        });
+        award(AllAdvancements.MILLSTONE);
+        notifyUpdate();
+        ci.cancel();
     };
 };

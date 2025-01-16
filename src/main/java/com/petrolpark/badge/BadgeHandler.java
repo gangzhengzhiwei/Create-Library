@@ -58,7 +58,6 @@ public class BadgeHandler {
                     String date = badgeObject.get("date").getAsString();
                     date = date.substring(0, date.length() - 1);
                     Badge badge = Badge.getBadge(badgeObject.get("namespace").getAsString(), badgeObject.get("id").getAsString());
-                    Petrolpark.LOGGER.info(badgeObject.get("namespace").getAsString(), badgeObject.get("id").getAsString());
                     if (badge != null) {
                         badges.add(Pair.of(
                             badge,

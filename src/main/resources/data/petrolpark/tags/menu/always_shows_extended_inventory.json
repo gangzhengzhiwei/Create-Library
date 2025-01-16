@@ -23,13 +23,37 @@
         "minecraft:smoker",
         "minecraft:cartography_table",
         "minecraft:stonecutter",
-        "create:schematic_table",
-        "create:schematicannon",
-        "create:filter",
-        "create:attribute_filter",
-        "create:crafting_blueprint",
-        "create:linked_controller",
-        "create:toolbox",
-        "create:schedule"
+        {
+            "required": false,
+            "id": "create:schematic_table"
+        },
+        {
+            "required": false,
+            "id": "create:schematicannon"
+        },
+        {
+            "required": false,
+            "id": "create:filter"
+        },
+        {
+            "required": false,
+            "id": "create:attribute_filter"
+        },
+        {
+            "required": false,
+            "id": "create:crafting_blueprint"
+        },
+        {
+            "required": false,
+            "id": "create:linked_controller"
+        },
+        {
+            "required": false,
+            "id": "create:toolbox"
+        },
+        {
+            "required": false,
+            "id": "create:schedule"
+        }
     ]
 }

@@ -10,6 +10,8 @@ import com.petrolpark.PetrolparkTags;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * A specific instance of a contaminable object, with the specific Contaminants that object posseses.
@@ -22,20 +24,20 @@ public interface IContamination<OBJECT, OBJECT_STACK> {
 
     /**
      * @param inputs
-     * @param output
-     * @see IContamination#perpetuate(Stream, Object, Function) If you have a faster way of getting the Contamination
+     * @param outputs
+     * @see IContamination#perpetuate(Stream, Stream, Function) If you have a faster way of getting the Contamination
      */
-    public static void perpetuate(Stream<Object> inputs, Object output) {
-        perpetuate(inputs, output, object -> get(object).orElse(null));
+    public static void perpetuate(Stream<Object> inputs, Stream<Object> outputs) {
+        perpetuate(inputs, outputs, object -> get(object).orElse(null));
     };
 
     /**
      * @param <OBJECT> Type of the contaminable object
      * @param inputs
-     * @param output
+     * @param outputs
      * @param contaminationGetter
      */
-    public static <OBJECT> void perpetuate(Stream<OBJECT> inputs, OBJECT output, Function<OBJECT, IContamination<?, ?>> contaminationGetter) {
+    public static <OBJECT> void perpetuate(Stream<OBJECT> inputs, Stream<OBJECT> outputs, Function<OBJECT, IContamination<?, ?>> contaminationGetter) {
         Object2DoubleMap<Contaminant> amounts = new Object2DoubleArrayMap<>();
         double totalAmount = inputs.map(contaminationGetter)
             .dropWhile(Objects::isNull)
@@ -44,13 +46,39 @@ public interface IContamination<OBJECT, OBJECT_STACK> {
                 contamination.streamAllContaminants().forEach(contaminant -> amounts.merge(contaminant, amount, Double::sum));
                 return amount;
             }).sum();
-        Optional.ofNullable(contaminationGetter.apply(output)).ifPresent(contamination -> 
+        outputs.map(contaminationGetter)
+            .dropWhile(Objects::isNull)
+            .forEach(contamination -> 
             contamination.contaminateAll(
                 amounts.object2DoubleEntrySet().stream()
-                .filter(entry -> entry.getKey().isPreserved(entry.getDoubleValue() / totalAmount))
-                .map(Object2DoubleMap.Entry::getKey)
+                    .filter(entry -> entry.getKey().isPreserved(entry.getDoubleValue() / totalAmount))
+                    .map(Object2DoubleMap.Entry::getKey)
             )
         );
+    };
+
+    public static void perpetuate(Stream<ItemStack> itemInputs, Stream<FluidStack> fluidInputs, double fluidWeight, Stream<ItemStack> itemOutputs, Stream<FluidStack> fluidOutputs) {
+        Object2DoubleMap<Contaminant> amounts = new Object2DoubleArrayMap<>();
+        double totalAmount = itemInputs.map(ItemContamination::get)
+            .mapToDouble(contamination -> {
+                double amount = contamination.getAmount();
+                contamination.streamAllContaminants().forEach(contaminant -> amounts.merge(contaminant, amount, Double::sum));
+                return amount;
+            }).sum();
+        if (fluidWeight > 0d) totalAmount += fluidInputs.map(FluidContamination::get)
+            .mapToDouble(contamination -> {
+                double amount = contamination.getAmount() / fluidWeight;
+                contamination.streamAllContaminants().forEach(contaminant -> amounts.merge(contaminant, amount, Double::sum));
+                return amount;
+            }).sum();
+        double finalTotalAmount = totalAmount;
+        Stream.concat(itemOutputs.map(ItemContamination::get), fluidOutputs.map(FluidContamination::get))
+            .forEach(contamination -> 
+                contamination.contaminateAll(
+                amounts.object2DoubleEntrySet().stream()
+                    .filter(entry -> entry.getKey().isPreserved(entry.getDoubleValue() / finalTotalAmount))
+                    .map(Object2DoubleMap.Entry::getKey)
+            ));
     };
 
     public Contaminable<OBJECT, OBJECT_STACK> getContaminable();

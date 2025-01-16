@@ -1,17 +1,24 @@
 package com.petrolpark.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.petrolpark.contamination.IContamination;
+import com.petrolpark.contamination.IItemStackDuck;
+import com.petrolpark.contamination.ItemContamination;
 import com.petrolpark.itemdecay.IDecayingItem;
 import com.petrolpark.util.ItemHelper;
 
 import net.minecraft.world.item.ItemStack;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin {
+public class ItemStackMixin implements IItemStackDuck {
+
+    @Unique
+    private IContamination<?, ?> contamination;
     
     @Inject(
         method = "copy",
@@ -29,5 +36,20 @@ public class ItemStackMixin {
     )
     private static void inIsSameItemSameTags(ItemStack stack, ItemStack otherStack, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(ItemHelper.equalIgnoringTags(stack, otherStack));
+    }
+
+    @Override
+    public IContamination<?, ?> getContamination() {
+        if (contamination == null) contamination = ItemContamination.create(self());
+        return contamination;
+    };
+
+    @Override
+    public void onContaminationSaved() {
+        contamination = null;
+    };
+
+    private ItemStack self() {
+        return (ItemStack)(Object)this;  
     };
 };
