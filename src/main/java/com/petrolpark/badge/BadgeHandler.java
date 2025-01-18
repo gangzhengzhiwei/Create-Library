@@ -18,6 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.petrolpark.Petrolpark;
+import com.petrolpark.compat.CompatMods;
 import com.petrolpark.util.Pair;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber
 public class BadgeHandler {
 
-    public static final String VERSION_UUID = "534319cb-3ba5-4c9f-befa-edb5e9562ba8";
+    public static final String VERSION_UUID = "fae762ea-6650-4cce-830a-3c05bd20e042";
 
     public static final String GET_BADGES_URL = "https://us-central1.gcp.data.mongodb-api.com/app/destroybadges-qojlw/endpoint/GetBadgesByMinecraftUUID";
 
@@ -111,7 +112,7 @@ public class BadgeHandler {
     };
 
     private static boolean isEarlyBirdViable() {
-        return false;
+        return CompatMods.PQAULITY.isLoaded();
     };
 
     private static String getFormattedUUID(ServerPlayer player) {

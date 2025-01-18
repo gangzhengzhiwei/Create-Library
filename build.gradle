@@ -147,6 +147,11 @@ dependencies {
 
     // Minecraft
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // Bundled dependencies
+    jarJar("com.tterrag.registrate:Registrate:${registrate_version}") {
+        jarJar.ranged(it, '[MC1.19.3-1.1.10,)')
+    }
     
     // Create
     implementation fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
@@ -186,6 +191,16 @@ jar {
                 "MixinConfigs"            : 'petrolpark.mixins.json'
         ])
     }
+}
+
+task jarJarRelease {
+    group = 'jarjar'
+    doLast {
+        tasks.jarJar {
+            archiveClassifier = ''
+        }
+    }
+    finalizedBy tasks.jarJar
 }
 
 java {
