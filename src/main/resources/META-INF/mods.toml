@@ -11,7 +11,7 @@ displayURL="https://www.modrinth.com/mod/petrolpark"
 logoFile="logo.png"
 #credits=""
 authors="petrolpark"
-description='''Common code for petrolpark's Create add-ons.'''
+description='''Common code for petrolpark's Create add-ons and other Minecraft mods.'''
 
 [[dependencies.petrolpark]]
     modId="forge"
