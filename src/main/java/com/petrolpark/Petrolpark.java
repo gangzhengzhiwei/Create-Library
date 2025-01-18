@@ -9,6 +9,10 @@ import com.petrolpark.compat.create.Create;
 import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
 import com.petrolpark.itemdecay.DecayingItemHandler;
+import com.petrolpark.loot.PetrolparkGlobalLootModifierSerializers;
+import com.petrolpark.loot.PetrolparkLootEntityNumberProviderTypes;
+import com.petrolpark.loot.PetrolparkLootItemStackNumberProviderTypes;
+import com.petrolpark.loot.PetrolparkLootNumberProviderTypes;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.recipe.IPetrolparkRecipeTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
@@ -53,13 +57,17 @@ public class Petrolpark {
         DESTROY_REGISTRATE.registerEventListeners(modEventBus);
 
         // Config
-        // Config
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, PetrolparkConfig.serverSpec);
 
         // Registration
         PetrolparkRegistries.register();
         Badges.register();
         IPetrolparkRecipeTypes.register(modEventBus);
+        // Registration - loot
+        PetrolparkLootNumberProviderTypes.register();
+        PetrolparkLootItemStackNumberProviderTypes.register();
+        PetrolparkLootEntityNumberProviderTypes.register();
+        PetrolparkGlobalLootModifierSerializers.register();
 
         // Client
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PetrolparkClient.clientCtor(modEventBus, forgeEventBus));

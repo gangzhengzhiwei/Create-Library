@@ -1,0 +1,17 @@
+{
+    "type": "petrolpark:contaminate",
+    "conditions": [],
+    "contaminant": "petrolpark:example_child",
+    "chance": {
+        "type": "petrolpark:context_entity",
+        "target": "killer",
+        "value": {
+            "type": "petrolpark:equipment",
+            "slot": "mainhand",
+            "value": {
+                "type": "petrolpark:enchantment_level",
+                "enchantment": "minecraft:sharpness"
+            }
+        }
+    }
+}
