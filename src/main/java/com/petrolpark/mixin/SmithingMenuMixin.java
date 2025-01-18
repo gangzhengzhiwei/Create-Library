@@ -33,7 +33,8 @@ public abstract class SmithingMenuMixin extends ItemCombinerMenu {
         method = "Lnet/minecraft/world/inventory/SmithingMenu;createResult()V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/inventory/ResultContainer;setItem(ILnet/minecraft/world/item/ItemStack;)V"
+            target = "Lnet/minecraft/world/inventory/ResultContainer;setItem(ILnet/minecraft/world/item/ItemStack;)V",
+            ordinal = 1
         ),
         locals = LocalCapture.CAPTURE_FAILSOFT
     )

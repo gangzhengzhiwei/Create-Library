@@ -13,6 +13,8 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -35,6 +37,10 @@ public class PetrolparkRegistrate extends AbstractRegistrate<PetrolparkRegistrat
     public <T extends Badge> BadgeBuilder<T, PetrolparkRegistrate> badge(String name, NonNullSupplier<T> factory) {
 		return (BadgeBuilder<T, PetrolparkRegistrate>) entry(name, c -> BadgeBuilder.create(this, this, name, c, factory));
 	};
+
+    public RegistryEntry<LootItemConditionType> lootConditionType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends LootItemCondition> serializer) {
+        return simple(name, Registries.LOOT_CONDITION_TYPE, () -> new LootItemConditionType(serializer));
+    };
 
     public RegistryEntry<LootNumberProviderType> lootNumberProviderType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends NumberProvider> serializer) {
         return simple(name, Registries.LOOT_NUMBER_PROVIDER_TYPE, () -> new LootNumberProviderType(serializer));

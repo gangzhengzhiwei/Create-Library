@@ -1,7 +1,6 @@
 {
     "replace": false,
     "entries": [
-        "petrolpark:contaminate_test",
         "petrolpark:contaminated_kinetic_blocks"
     ]
 }

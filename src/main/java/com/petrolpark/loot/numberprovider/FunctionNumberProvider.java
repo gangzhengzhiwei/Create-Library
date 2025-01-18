@@ -46,15 +46,15 @@ public abstract class FunctionNumberProvider implements NumberProvider {
             for (NumberProvider child : value.children) {
                 childrenElement.add(serializationContext.serialize(child, NumberProvider.class));
             };
-            json.add("children", childrenElement);
+            json.add("values", childrenElement);
         };
 
         @Override
         public NP deserialize(JsonObject json, JsonDeserializationContext serializationContext) {
-            JsonArray childrenElement = GsonHelper.getAsJsonArray(json, "children");
+            JsonArray childrenElement = GsonHelper.getAsJsonArray(json, "values");
             NumberProvider[] children = new NumberProvider[childrenElement.size()];
             for (int i = 0; i < childrenElement.size(); i++) {
-                children[i] = GsonHelper.convertToObject(childrenElement.get(i), "child "+i, serializationContext, NumberProvider.class);
+                children[i] = GsonHelper.convertToObject(childrenElement.get(i), "value "+i, serializationContext, NumberProvider.class);
             };
             return factory.create(children);
         };

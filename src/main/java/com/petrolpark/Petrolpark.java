@@ -10,6 +10,7 @@ import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
 import com.petrolpark.itemdecay.DecayingItemHandler;
 import com.petrolpark.loot.PetrolparkGlobalLootModifierSerializers;
+import com.petrolpark.loot.PetrolparkLootConditionTypes;
 import com.petrolpark.loot.PetrolparkLootEntityNumberProviderTypes;
 import com.petrolpark.loot.PetrolparkLootItemStackNumberProviderTypes;
 import com.petrolpark.loot.PetrolparkLootNumberProviderTypes;
@@ -64,6 +65,7 @@ public class Petrolpark {
         Badges.register();
         IPetrolparkRecipeTypes.register(modEventBus);
         // Registration - loot
+        PetrolparkLootConditionTypes.register();
         PetrolparkLootNumberProviderTypes.register();
         PetrolparkLootItemStackNumberProviderTypes.register();
         PetrolparkLootEntityNumberProviderTypes.register();
