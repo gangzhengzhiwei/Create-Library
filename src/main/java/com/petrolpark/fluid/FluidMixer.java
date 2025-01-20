@@ -74,15 +74,17 @@ public class FluidMixer {
                 currentMixer = mixer;
             };
         };
-        FluidStack result = baseFluidStack;
         if (currentMixer != null) {
             addedFluidStack.setAmount(currentMixer.getAmountToMixIn(maxResultAmount, baseFluidStack, addedFluidStack));
-            result = currentMixer.mix2(baseFluidStack, addedFluidStack);
-        };
-        if (afterMixers.isEmpty() || action.simulate()) return result;
-        FluidStack[] fluidStacks = new FluidStack[]{baseFluidStack, addedFluidStack};
-        for (IFluidMixer mixer : afterMixers) mixer.afterMix(result, fluidStacks);
-        return result; 
+            FluidStack result = currentMixer.mix2(baseFluidStack, addedFluidStack);
+            if (afterMixers.isEmpty() || action.simulate()) return result;
+            FluidStack[] fluidStacks = new FluidStack[]{baseFluidStack, addedFluidStack};
+            for (IFluidMixer mixer : afterMixers) mixer.afterMix(result, fluidStacks);
+            return result; 
+        } else {
+            addedFluidStack.setAmount(0);
+            return baseFluidStack; // No Mixer exists that can mix these
+        }
     };
     
     public interface IFluidMixer {

@@ -1,10 +1,12 @@
 package com.petrolpark.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.petrolpark.fluid.FluidMixer;
+import com.petrolpark.util.FluidHelper;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -17,15 +19,14 @@ public abstract class FluidTankMixin implements IFluidHandler, IFluidTank {
     @Shadow
     public abstract void setFluid(FluidStack stack);
     
-    @Overwrite(
+    @Inject(
+        method = "Lnet/minecraftforge/fluids/capability/templates/FluidTank;fill(Lnet/minecraftforge/fluids/FluidStack;Lnet/minecraftforge/fluids/capability/IFluidHandler$FluidAction;)I",
+        at = @At("RETURN"),
+        cancellable = true,
         remap = false
     )
     @SuppressWarnings("overwrite")
-    public int fill(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || !isFluidValid(resource)) return 0;
-        FluidStack toAdd = resource.copy();
-        FluidStack result = FluidMixer.mixIn(getFluid(), toAdd, getCapacity(), action);
-        if (action.execute()) setFluid(result);
-        return toAdd.getAmount();
+    public void inFill(FluidStack resource, FluidAction action, CallbackInfoReturnable<Integer> cir) {
+        if (cir.getReturnValueI() == 0) cir.setReturnValue(FluidHelper.fillTankWithMixer((FluidTank)(Object)this, resource, action));
     };
 };

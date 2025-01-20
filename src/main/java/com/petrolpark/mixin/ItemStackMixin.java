@@ -20,6 +20,7 @@ public class ItemStackMixin implements IItemStackDuck {
     @Unique
     private IContamination<?, ?> contamination;
     
+    // TODO replace with ModifyReturnValue from mixin extras
     @Inject(
         method = "copy",
         at = @At("RETURN"),
