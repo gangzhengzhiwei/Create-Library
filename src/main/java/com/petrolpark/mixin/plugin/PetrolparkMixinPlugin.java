@@ -15,10 +15,17 @@ import com.petrolpark.compat.CompatMods;
 
 public class PetrolparkMixinPlugin implements IMixinConfigPlugin {
 
+    private int mixinPackagePathLength = 1;
+
     private final Map<String, Supplier<Boolean>> shouldLoad = new HashMap<>();
 
     protected String getMixinPackage() {
         return "com.petrolpark.mixin";
+    };
+
+    private int getMixinPackagePathLength() {
+        if (mixinPackagePathLength == -1) mixinPackagePathLength = getMixinPackage().split(".").length;
+        return mixinPackagePathLength;
     };
 
     @Override
@@ -44,7 +51,7 @@ public class PetrolparkMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         // Compat mixins
         String[] mixinPath = mixinClassName.split(".");
-        if (mixinPath.length >= 3 && mixinPath[3].equals("compat")) return CompatMods.isLoading(mixinPath[4]);
+        if (mixinPath.length >= getMixinPackagePathLength() && mixinPath[getMixinPackagePathLength()].equals("compat")) return CompatMods.isLoading(mixinPath[getMixinPackagePathLength() + 1]);
 
         // Custom predicates
         Supplier<Boolean> predicate = shouldLoad.get(mixinClassName);
