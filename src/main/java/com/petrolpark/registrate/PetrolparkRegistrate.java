@@ -4,10 +4,14 @@ import java.util.function.Supplier;
 
 import com.petrolpark.PetrolparkRegistries;
 import com.petrolpark.badge.Badge;
-import com.petrolpark.loot.numberprovider.entity.EntityNumberProvider;
-import com.petrolpark.loot.numberprovider.entity.LootEntityNumberProviderType;
-import com.petrolpark.loot.numberprovider.itemstack.ItemStackNumberProvider;
-import com.petrolpark.loot.numberprovider.itemstack.LootItemStackNumberProviderType;
+import com.petrolpark.data.loot.numberprovider.entity.EntityNumberProvider;
+import com.petrolpark.data.loot.numberprovider.entity.LootEntityNumberProviderType;
+import com.petrolpark.data.loot.numberprovider.itemstack.ItemStackNumberProvider;
+import com.petrolpark.data.loot.numberprovider.itemstack.LootItemStackNumberProviderType;
+import com.petrolpark.recipe.ingredient.modifier.IngredientModifier;
+import com.petrolpark.recipe.ingredient.modifier.IngredientModifierType;
+import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizer;
+import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizerType;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -60,6 +64,14 @@ public class PetrolparkRegistrate extends AbstractRegistrate<PetrolparkRegistrat
     
     public RegistryEntry<LootEntityNumberProviderType> lootEntityNumberProviderType(String name, Supplier<? extends EntityNumberProvider> simpleFactory) {
         return simple(name, PetrolparkRegistries.Keys.LOOT_ENTITY_NUMBER_PROVIDER_TYPE, () -> new LootEntityNumberProviderType(simpleFactory));
+    };
+
+    public RegistryEntry<IngredientRandomizerType> ingredientRandomizerType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IngredientRandomizer> serializer) {
+        return simple(name, PetrolparkRegistries.Keys.INGREDIENT_RANDOMIZER_TYPE, () -> new IngredientRandomizerType(serializer));
+    };
+
+    public RegistryEntry<IngredientModifierType> ingredientModifierType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IngredientModifier> serializer) {
+        return simple(name, PetrolparkRegistries.Keys.INGREDIENT_MODIFIER_TYPE, () -> new IngredientModifierType(serializer));
     };
     
 };

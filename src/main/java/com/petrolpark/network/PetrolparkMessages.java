@@ -4,11 +4,14 @@ import java.util.function.Function;
 
 import com.petrolpark.Petrolpark;
 import com.petrolpark.network.packet.C2SPacket;
+import com.petrolpark.network.packet.S2CPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PetrolparkMessages {
@@ -28,16 +31,18 @@ public class PetrolparkMessages {
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
 
+            addS2CPacket(null, null);
+
         MinecraftForge.EVENT_BUS.post(new RegisterPetrolparkMessagesEvent());
     };
 
-    // public static <T extends S2CPacket> void addS2CPacket(SimpleChannel net, Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
-    //     net.messageBuilder(clazz, id(), NetworkDirection.PLAY_TO_CLIENT)
-    //         .decoder(decoder)
-    //         .encoder(T::toBytes)
-    //         .consumerMainThread(T::handle)
-    //         .add();
-    // };
+    public static <T extends S2CPacket> void addS2CPacket(Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
+        INSTANCE.messageBuilder(clazz, id(), NetworkDirection.PLAY_TO_CLIENT)
+            .decoder(decoder)
+            .encoder(T::toBytes)
+            .consumerMainThread(T::handle)
+            .add();
+    };
 
     public static <T extends C2SPacket> void addC2SPacket(Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {
         INSTANCE.messageBuilder(clazz, id(), NetworkDirection.PLAY_TO_SERVER)
@@ -51,17 +56,17 @@ public class PetrolparkMessages {
         INSTANCE.sendToServer(message);
     };
 
-    // public static void sendToClient(S2CPacket message, ServerPlayer player) {
-    //     INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
-    // };
+    public static void sendToClient(S2CPacket message, ServerPlayer player) {
+        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+    };
 
     // public static void sendToAllClientsInDimension(S2CPacket message, ServerLevel level) {
     //     INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), message);
     // };
 
-    // public static void sendToAllClients(S2CPacket message) {
-    //     INSTANCE.send(PacketDistributor.ALL.noArg(), message);
-    // };
+    public static void sendToAllClients(S2CPacket message) {
+        INSTANCE.send(PacketDistributor.ALL.noArg(), message);
+    };
 
     // public static void sendToAllClientsNear(S2CPacket message, BlockSource location) {
     //     INSTANCE.send(PacketDistributor.NEAR.with(TargetPoint.p(location.x(), location.y(), location.z(), 32d, location.getLevel().dimension())), message);

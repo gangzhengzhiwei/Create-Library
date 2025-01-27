@@ -42,7 +42,7 @@ public class BadgesCapability {
 
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-        public static Capability<BadgesCapability> PLAYER_BADGES = CapabilityManager.get(new CapabilityToken<BadgesCapability>() {});
+        public static final Capability<BadgesCapability> PLAYER_BADGES = CapabilityManager.get(new CapabilityToken<BadgesCapability>() {});
 
         private BadgesCapability playerBadges = null;
         private final LazyOptional<BadgesCapability> optional = LazyOptional.of(this::createPlayerBadges);

@@ -30,6 +30,7 @@
         "CraftingMenuMixin",
         "FluidTankMixin",
         "ItemStackMixin",
+        "LivingEntityMixin",
         "ServerAdvancementManagerMixin",
         "ShapedRecipeMixin",
         "ShapelessRecipeMixin",

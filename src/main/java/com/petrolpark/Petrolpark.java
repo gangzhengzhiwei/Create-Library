@@ -8,15 +8,18 @@ import com.petrolpark.compat.CompatMods;
 import com.petrolpark.compat.create.Create;
 import com.petrolpark.compat.curios.Curios;
 import com.petrolpark.compat.jei.category.ITickableCategory;
+import com.petrolpark.data.loot.PetrolparkGlobalLootModifierSerializers;
+import com.petrolpark.data.loot.PetrolparkLootConditionTypes;
+import com.petrolpark.data.loot.PetrolparkLootEntityNumberProviderTypes;
+import com.petrolpark.data.loot.PetrolparkLootItemStackNumberProviderTypes;
+import com.petrolpark.data.loot.PetrolparkLootNumberProviderTypes;
 import com.petrolpark.itemdecay.DecayingItemHandler;
-import com.petrolpark.loot.PetrolparkGlobalLootModifierSerializers;
-import com.petrolpark.loot.PetrolparkLootConditionTypes;
-import com.petrolpark.loot.PetrolparkLootEntityNumberProviderTypes;
-import com.petrolpark.loot.PetrolparkLootItemStackNumberProviderTypes;
-import com.petrolpark.loot.PetrolparkLootNumberProviderTypes;
+import com.petrolpark.mobeffects.PetrolparkMobEffects;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.recipe.IPetrolparkRecipeTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
+import com.petrolpark.team.TeamTypes;
+import com.petrolpark.team.scoreboard.ScoreboardTeamManager;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,6 +47,7 @@ public class Petrolpark {
     };
 
     public static final ThreadLocal<DecayingItemHandler> DECAYING_ITEM_HANDLER = ThreadLocal.withInitial(() -> DecayingItemHandler.DUMMY);
+    public static final ScoreboardTeamManager SCOREBOARD_TEAMS = new ScoreboardTeamManager();
 
     static {
         PetrolparkItemDisplayContexts.register();
@@ -64,6 +68,8 @@ public class Petrolpark {
         PetrolparkRegistries.register();
         Badges.register();
         IPetrolparkRecipeTypes.register(modEventBus);
+        PetrolparkMobEffects.register();
+        TeamTypes.register();
         // Registration - loot
         PetrolparkLootConditionTypes.register();
         PetrolparkLootNumberProviderTypes.register();

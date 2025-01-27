@@ -4,10 +4,18 @@ import static com.petrolpark.Petrolpark.REGISTRATE;
 
 import com.petrolpark.badge.Badge;
 import com.petrolpark.contamination.Contaminant;
+import com.petrolpark.data.loot.numberprovider.entity.LootEntityNumberProviderType;
+import com.petrolpark.data.loot.numberprovider.itemstack.LootItemStackNumberProviderType;
 import com.petrolpark.dough.Dough;
 import com.petrolpark.dough.DoughCut;
-import com.petrolpark.loot.numberprovider.entity.LootEntityNumberProviderType;
-import com.petrolpark.loot.numberprovider.itemstack.LootItemStackNumberProviderType;
+import com.petrolpark.recipe.ingredient.modifier.IngredientModifierType;
+import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizerType;
+import com.petrolpark.shop.Shop;
+import com.petrolpark.shop.offer.ShopOfferGenerator;
+import com.petrolpark.shop.offer.payment.FixedPaymentType;
+import com.petrolpark.shop.offer.payment.generator.PaymentGeneratorType;
+import com.petrolpark.team.ITeam.ITeamType;
+import com.petrolpark.team.ITeamDataType;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -29,11 +37,22 @@ public class PetrolparkRegistries {
     public static class Keys {
         // Core
         public static final ResourceKey<Registry<Contaminant>> CONTAMINANT = REGISTRATE.makeRegistry("contaminant", RegistryBuilder::new);
+        public static final ResourceKey<Registry<ITeamType<?>>> TEAM_TYPE = REGISTRATE.makeRegistry("team_type", RegistryBuilder::new); 
+        public static final ResourceKey<Registry<ITeamDataType<?>>> TEAM_DATA_TYPE = REGISTRATE.makeRegistry("team_data_type", RegistryBuilder::new);
         public static final ResourceKey<Registry<Badge>> BADGE = REGISTRATE.makeRegistry("badge", RegistryBuilder::new);
 
         // Loot
         public static final ResourceKey<Registry<LootItemStackNumberProviderType>> LOOT_ITEM_STACK_NUMBER_PROVIDER_TYPE = REGISTRATE.makeRegistry("loot_item_stack_number_provider_type", RegistryBuilder::new);
         public static final ResourceKey<Registry<LootEntityNumberProviderType>> LOOT_ENTITY_NUMBER_PROVIDER_TYPE = REGISTRATE.makeRegistry("loot_entity_number_provider_type", RegistryBuilder::new);
+        
+        public static final ResourceKey<Registry<IngredientRandomizerType>> INGREDIENT_RANDOMIZER_TYPE = REGISTRATE.makeRegistry("ingredient_randomizer_type", RegistryBuilder::new);
+        public static final ResourceKey<Registry<IngredientModifierType>> INGREDIENT_MODIFIER_TYPE = REGISTRATE.makeRegistry("ingredient_modifier_type", RegistryBuilder::new);
+
+        // Shops
+        public static final ResourceKey<Registry<Shop>> SHOP = REGISTRATE.makeRegistry("shop", RegistryBuilder::new);
+        public static final ResourceKey<Registry<ShopOfferGenerator>> SHOP_OFFER_GENERATOR = REGISTRATE.makeRegistry("shop_offer_generator", RegistryBuilder::new);
+        public static final ResourceKey<Registry<PaymentGeneratorType>> PAYMENT_GENERATOR_TYPE = REGISTRATE.makeRegistry("payment_generator_type", RegistryBuilder::new);
+        public static final ResourceKey<Registry<FixedPaymentType>> FIXED_PAYMENT_TYPE = REGISTRATE.makeRegistry("fixed_payment_type", RegistryBuilder::new);
 
         // Dough
         public static final ResourceKey<Registry<Dough>> DOUGH = REGISTRATE.makeRegistry("dough", RegistryBuilder::new);

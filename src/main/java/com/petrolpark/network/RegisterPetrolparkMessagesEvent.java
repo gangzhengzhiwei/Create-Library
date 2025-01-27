@@ -5,7 +5,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Fired on the {@link MinecraftForge#EVENT_BUS} when Petrolpark packets are registered.
- * Do so with {@link PetrolparkMessages#addC2SPacket}.
+ * Do so with {@link PetrolparkMessages#addC2SPacket} or {@link PetrolparkMessages#addS2CPacket}.
  * Not cancellable.
  */
 public class RegisterPetrolparkMessagesEvent extends Event {

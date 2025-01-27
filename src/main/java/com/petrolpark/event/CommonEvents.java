@@ -4,12 +4,14 @@ import java.util.stream.Stream;
 
 import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkConfig;
+import com.petrolpark.PetrolparkTags;
 import com.petrolpark.badge.BadgesCapability;
 import com.petrolpark.command.ContaminateCommand;
 import com.petrolpark.contamination.Contaminant;
 import com.petrolpark.contamination.ItemContamination;
 import com.petrolpark.itemdecay.IDecayingItem;
 import com.petrolpark.itemdecay.DecayingItemHandler.ServerDecayingItemHandler;
+import com.petrolpark.team.SinglePlayerTeam;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -48,11 +50,11 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player player) {
+        if (event.getObject() instanceof final Player player) {
             // Add Badge Capability
-            if (!player.getCapability(BadgesCapability.Provider.PLAYER_BADGES).isPresent()) {
-                event.addCapability(Petrolpark.asResource("badges"), new BadgesCapability.Provider());
-            };
+            if (!player.getCapability(BadgesCapability.Provider.PLAYER_BADGES).isPresent()) event.addCapability(Petrolpark.asResource("badges"), new BadgesCapability.Provider());
+            // Add Team Capability
+            if (!player.getCapability(SinglePlayerTeam.CAPABILITY).isPresent()) event.addCapability(Petrolpark.asResource("team"), new SinglePlayerTeam(player));
         };
     };
 
@@ -61,9 +63,11 @@ public class CommonEvents {
         if (event.isWasDeath()) {
             // Copy Badge data
             event.getOriginal().getCapability(BadgesCapability.Provider.PLAYER_BADGES).ifPresent(oldStore -> {
-                event.getEntity().getCapability(BadgesCapability.Provider.PLAYER_BADGES).ifPresent(newStore -> {
-                    newStore.setBadges(oldStore.getBadges());
-                });
+                event.getEntity().getCapability(BadgesCapability.Provider.PLAYER_BADGES).ifPresent(newStore -> newStore.setBadges(oldStore.getBadges()));
+            });
+            // Copy (some) Team Data
+            event.getOriginal().getCapability(SinglePlayerTeam.CAPABILITY).ifPresent(oldCap -> {
+                event.getEntity().getCapability(SinglePlayerTeam.CAPABILITY).ifPresent(newCap -> newCap.copyTeamData(event.getEntity().level(), oldCap, PetrolparkTags.TeamDataTypes.LOST_ON_PLAYER_DEATH::matches));
             });
         };
     };
