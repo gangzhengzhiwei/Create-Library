@@ -108,6 +108,7 @@ public interface IContamination<OBJECT, OBJECT_STACK> {
 
     public default Stream<Contaminant> streamShownContaminants() {
         Set<Contaminant> shownIfAbsent = IntrinsicContaminants.getShownIfAbsent(this);
+        IntrinsicContaminants.get(this); // Do this before the Stream is opened to generate the Intrinsic Contaminants early and avoid a ConcurrentModificationException 
         return streamAllContaminants().dropWhile(PetrolparkTags.Contaminants.HIDDEN::matches).dropWhile(shownIfAbsent::contains);
     };
 

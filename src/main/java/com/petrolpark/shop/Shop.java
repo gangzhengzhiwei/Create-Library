@@ -17,6 +17,10 @@ public class Shop {
     
     public final List<OfferGeneratorEntry> offerGenerators;
 
+    public Shop(List<OfferGeneratorEntry> offerGenerators) {
+        this.offerGenerators = offerGenerators;
+    };
+
     public static record OfferGeneratorEntry(ShopOfferGenerator generator, NumberProvider weight) implements LootContextUser {
 
         public static final Codec<OfferGeneratorEntry> CODEC = RecordCodecBuilder.create(instance -> 

@@ -75,7 +75,7 @@ public class SinglePlayerTeam extends AbstractTeam<SinglePlayerTeam> implements 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == CAPABILITY) return LazyOptional.of(() -> this).cast();
-        return null;
+        return LazyOptional.empty();
     };
 
     @Override

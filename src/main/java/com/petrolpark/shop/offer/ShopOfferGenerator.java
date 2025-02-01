@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.petrolpark.network.GsonSerializableCodecs;
+import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizer;
 import com.petrolpark.shop.offer.order.ShopOrderModifier;
 import com.petrolpark.shop.offer.payment.generator.IPaymentGenerator;
 
@@ -17,10 +18,18 @@ public class ShopOfferGenerator implements LootContextUser {
     public static final Codec<ShopOfferGenerator> CODEC = null;
 
     public final IPaymentGenerator<?> paymentGenerator;
+    public final IngredientRandomizer orderRandomizer;
     public final List<OrderModifierEntry> orderModifiers;
     
-    public List<ShopOffer> generate(LootContext context) {
+    public ShopOfferGenerator(IPaymentGenerator<?> paymentGenerator, IngredientRandomizer orderRandomizer,
+            List<OrderModifierEntry> orderModifiers) {
+        this.paymentGenerator = paymentGenerator;
+        this.orderRandomizer = orderRandomizer;
+        this.orderModifiers = orderModifiers;
+    };
 
+    public List<ShopOffer> generate(LootContext context) {
+        return List.of(); //TODO
     };
 
     public static record OrderModifierEntry(ShopOrderModifier orderModifier, NumberProvider chance) {

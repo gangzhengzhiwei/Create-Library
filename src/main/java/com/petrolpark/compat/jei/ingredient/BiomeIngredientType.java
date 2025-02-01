@@ -57,7 +57,9 @@ public class BiomeIngredientType implements IIngredientType<Biome> {
 
         @Override
         public String getUniqueId(Biome ingredient, UidContext context) {
-            return getResourceLocation(ingredient).toString();
+            ResourceLocation rl = getResourceLocation(ingredient);
+            if (rl == null) return "Unknown Biome";
+            return rl.toString();
         };
 
         @Override

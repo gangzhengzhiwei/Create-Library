@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkConfig;
 import com.petrolpark.contamination.IContamination;
 import com.petrolpark.contamination.ItemContamination;
@@ -63,7 +62,6 @@ public abstract class CrushingWheelControllerBlockEntityMixin extends SmartBlock
     )
     public void inApplyRecipeStart(CallbackInfo ci) {
         lastItemProcessed = inventory.getStackInSlot(0).copy();
-        Petrolpark.LOGGER.info("Setting last item processed to "+lastItemProcessed.toString());
     };
 
     @Inject(
