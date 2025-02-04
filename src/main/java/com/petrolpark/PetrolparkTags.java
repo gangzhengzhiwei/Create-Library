@@ -3,7 +3,7 @@ package com.petrolpark;
 import java.util.Collections;
 
 import com.petrolpark.contamination.Contaminant;
-import com.petrolpark.team.ITeamDataType;
+import com.petrolpark.team.data.ITeamDataType;
 import com.petrolpark.util.Lang;
 
 import net.minecraft.core.registries.Registries;

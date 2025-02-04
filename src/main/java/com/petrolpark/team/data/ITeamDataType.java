@@ -1,4 +1,4 @@
-package com.petrolpark.team;
+package com.petrolpark.team.data;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

@@ -10,17 +10,20 @@ import com.petrolpark.network.GsonSerializableCodecs;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootContextUser;
 
 public interface IngredientModifier extends LootContextUser {
 
     public static final Codec<IngredientModifier> CODEC = GsonSerializableCodecs.GSONserializableCodec("ingredient modifier", IngredientModifier.class, PetrolparkGson.get());
 
-    public boolean test(ItemStack stack);
+    public boolean test(ItemStack stack, Level level);
 
-    public void modifyExamples(List<ItemStack> exampleStacks);
+    public void modifyExamples(List<ItemStack> exampleStacks, Level level);
 
-    public void addToDescription(List<Component> description);
+    public void modifyCounterExamples(List<ItemStack> counterExampleStacks, Level level);
+
+    public void addToDescription(List<Component> description, Level level);
 
     public IngredientModifierType getType();
 

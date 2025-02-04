@@ -12,7 +12,7 @@ import net.minecraft.world.scores.Team;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
- * Fired to gather {@link ITeam}s of which this Player {@link ITeam#isMember(Player) is a part.
+ * Fired to gather {@link ITeam}s of which this Player {@link ITeam#isMember(Player) is a part}.
  */
 public class GatherTeamsEvent extends PlayerEvent {
 
@@ -21,6 +21,7 @@ public class GatherTeamsEvent extends PlayerEvent {
     public GatherTeamsEvent(Player player) {
         super(player);
         teams = new ArrayList<>(2);
+
         // Built-in Teams
         player.getCapability(SinglePlayerTeam.CAPABILITY).ifPresent(this::addTeam);
         Team team = player.getTeam();

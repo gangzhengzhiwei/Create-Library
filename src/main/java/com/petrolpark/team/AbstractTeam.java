@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkRegistries;
+import com.petrolpark.team.data.ITeamDataType;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -27,7 +28,11 @@ public abstract class AbstractTeam<T extends ITeam<? super T>> implements ITeam<
     };
 
     public Stream<ITeamDataType<?>> streamNonBlankTeamData() {
-        return data.keySet().stream().dropWhile(type -> type.isBlank(getTeamData(type)));
+        return data.keySet().stream().dropWhile(this::isBlank);
+    };
+
+    public <DT> boolean isBlank(ITeamDataType<DT> dataType) {
+        return dataType.isBlank(getTeamData(dataType));
     };
 
     public CompoundTag saveTeamData(Level level) {

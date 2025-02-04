@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.petrolpark.Petrolpark;
 import com.petrolpark.PetrolparkRegistries;
 import com.petrolpark.network.packet.S2CPacket;
-import com.petrolpark.team.ITeamDataType;
+import com.petrolpark.team.data.ITeamDataType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +19,7 @@ public class ScoreboardTeamDataChangedPacket extends S2CPacket {
     private final ITeamDataType<?> dataType;
     private final CompoundTag tag;
 
-    public <T> ScoreboardTeamDataChangedPacket(Level level, ScoreboardTeam team, ITeamDataType<?> dataType) {
+    public <T> ScoreboardTeamDataChangedPacket(Level level, ScoreboardTeam team, ITeamDataType<T> dataType) {
         this(level, team.team.getName(), dataType, team.getTeamData(dataType));
     };
 

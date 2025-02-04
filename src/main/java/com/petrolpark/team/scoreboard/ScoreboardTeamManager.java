@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.petrolpark.network.PetrolparkMessages;
-import com.petrolpark.team.ITeamDataType;
+import com.petrolpark.team.data.ITeamDataType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;

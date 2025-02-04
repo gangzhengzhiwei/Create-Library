@@ -4,8 +4,8 @@ import java.util.stream.Stream;
 
 import com.petrolpark.Petrolpark;
 import com.petrolpark.team.AbstractTeam;
-import com.petrolpark.team.ITeamDataType;
 import com.petrolpark.team.TeamTypes;
+import com.petrolpark.team.data.ITeamDataType;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;

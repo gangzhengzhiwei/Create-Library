@@ -8,10 +8,17 @@ import com.petrolpark.data.loot.numberprovider.entity.EntityNumberProvider;
 import com.petrolpark.data.loot.numberprovider.entity.LootEntityNumberProviderType;
 import com.petrolpark.data.loot.numberprovider.itemstack.ItemStackNumberProvider;
 import com.petrolpark.data.loot.numberprovider.itemstack.LootItemStackNumberProviderType;
+import com.petrolpark.data.loot.numberprovider.team.LootTeamNumberProviderType;
+import com.petrolpark.data.loot.numberprovider.team.TeamNumberProvider;
+import com.petrolpark.data.reward.RewardType;
+import com.petrolpark.data.reward.IReward;
+import com.petrolpark.data.reward.generator.IRewardGenerator;
+import com.petrolpark.data.reward.generator.RewardGeneratorType;
 import com.petrolpark.recipe.ingredient.modifier.IngredientModifier;
 import com.petrolpark.recipe.ingredient.modifier.IngredientModifierType;
 import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizer;
 import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizerType;
+import com.petrolpark.team.data.ITeamDataType;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
@@ -66,12 +73,32 @@ public class PetrolparkRegistrate extends AbstractRegistrate<PetrolparkRegistrat
         return simple(name, PetrolparkRegistries.Keys.LOOT_ENTITY_NUMBER_PROVIDER_TYPE, () -> new LootEntityNumberProviderType(simpleFactory));
     };
 
+    public RegistryEntry<LootTeamNumberProviderType> lootTeamNumberProviderType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends TeamNumberProvider> serializer) {
+        return simple(name, PetrolparkRegistries.Keys.LOOT_TEAM_NUMBER_PROVIDER_TYPE, () -> new LootTeamNumberProviderType(serializer));
+    };
+    
+    public RegistryEntry<LootTeamNumberProviderType> lootTeamNumberProviderType(String name, Supplier<? extends TeamNumberProvider> simpleFactory) {
+        return simple(name, PetrolparkRegistries.Keys.LOOT_TEAM_NUMBER_PROVIDER_TYPE, () -> new LootTeamNumberProviderType(simpleFactory));
+    };
+
     public RegistryEntry<IngredientRandomizerType> ingredientRandomizerType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IngredientRandomizer> serializer) {
         return simple(name, PetrolparkRegistries.Keys.INGREDIENT_RANDOMIZER_TYPE, () -> new IngredientRandomizerType(serializer));
     };
 
     public RegistryEntry<IngredientModifierType> ingredientModifierType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IngredientModifier> serializer) {
         return simple(name, PetrolparkRegistries.Keys.INGREDIENT_MODIFIER_TYPE, () -> new IngredientModifierType(serializer));
+    };
+
+    public RegistryEntry<RewardGeneratorType> rewardGeneratorType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IRewardGenerator> serializer) {
+        return simple(name, PetrolparkRegistries.Keys.REWARD_GENERATOR_TYPE, () -> new RewardGeneratorType(serializer));
+    };
+
+    public RegistryEntry<RewardType> rewardType(String name, net.minecraft.world.level.storage.loot.Serializer<? extends IReward> serializer) {
+        return simple(name, PetrolparkRegistries.Keys.REWARD_TYPE, () -> new RewardType(serializer));
+    };
+
+    public RegistryEntry<ITeamDataType<?>> teamDataType(String name, NonNullSupplier<ITeamDataType<?>> supplier) {
+        return generic(name, PetrolparkRegistries.Keys.TEAM_DATA_TYPE, supplier).register();
     };
     
 };

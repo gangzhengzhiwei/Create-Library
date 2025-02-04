@@ -9,6 +9,8 @@ import com.petrolpark.network.GsonSerializableCodecs;
 import com.petrolpark.recipe.ingredient.modifier.IngredientModifier;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootContextUser;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
@@ -44,10 +46,14 @@ public class ShopOrderModifier implements LootContextUser {
         return failureMultiplier;
     };
 
-    public List<Component> getDescription() {
+    public List<Component> getDescription(Level level) {
         List<Component> description = new ArrayList<>();
-        ingredientModifier.addToDescription(description);
+        ingredientModifier.addToDescription(description, level);
         return description;
+    };
+
+    public NumberProvider getMultiplier(ItemStack stack, Level level) {
+        if (ingredientModifier.test(stack, level)) return successMultiplier; else return failureMultiplier;
     };
 
 };

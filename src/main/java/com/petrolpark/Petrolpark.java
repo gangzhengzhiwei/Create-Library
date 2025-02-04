@@ -13,12 +13,18 @@ import com.petrolpark.data.loot.PetrolparkLootConditionTypes;
 import com.petrolpark.data.loot.PetrolparkLootEntityNumberProviderTypes;
 import com.petrolpark.data.loot.PetrolparkLootItemStackNumberProviderTypes;
 import com.petrolpark.data.loot.PetrolparkLootNumberProviderTypes;
+import com.petrolpark.data.loot.PetrolparkLootTeamNumberProviders;
+import com.petrolpark.data.reward.RewardGeneratorTypes;
+import com.petrolpark.data.reward.RewardTypes;
 import com.petrolpark.itemdecay.DecayingItemHandler;
 import com.petrolpark.mobeffects.PetrolparkMobEffects;
 import com.petrolpark.network.PetrolparkMessages;
 import com.petrolpark.recipe.IPetrolparkRecipeTypes;
+import com.petrolpark.recipe.ingredient.modifier.IngredientModifierTypes;
+import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizerTypes;
 import com.petrolpark.registrate.PetrolparkRegistrate;
 import com.petrolpark.team.TeamTypes;
+import com.petrolpark.team.data.TeamDataTypes;
 import com.petrolpark.team.scoreboard.ScoreboardTeamManager;
 
 import net.minecraft.resources.ResourceLocation;
@@ -70,12 +76,18 @@ public class Petrolpark {
         IPetrolparkRecipeTypes.register(modEventBus);
         PetrolparkMobEffects.register();
         TeamTypes.register();
+        TeamDataTypes.register();
         // Registration - loot
         PetrolparkLootConditionTypes.register();
         PetrolparkLootNumberProviderTypes.register();
         PetrolparkLootItemStackNumberProviderTypes.register();
         PetrolparkLootEntityNumberProviderTypes.register();
+        PetrolparkLootTeamNumberProviders.register();
         PetrolparkGlobalLootModifierSerializers.register();
+        RewardGeneratorTypes.register();
+        RewardTypes.register();
+        IngredientModifierTypes.register();
+        IngredientRandomizerTypes.register();
 
         // Client
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> PetrolparkClient.clientCtor(modEventBus, forgeEventBus));

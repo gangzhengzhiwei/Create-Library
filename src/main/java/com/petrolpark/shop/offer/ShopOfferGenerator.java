@@ -4,41 +4,47 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.petrolpark.network.GsonSerializableCodecs;
+import com.petrolpark.data.reward.generator.IRewardGenerator;
 import com.petrolpark.recipe.ingredient.randomizer.IngredientRandomizer;
-import com.petrolpark.shop.offer.order.ShopOrderModifier;
-import com.petrolpark.shop.offer.payment.generator.IPaymentGenerator;
+import com.petrolpark.shop.offer.order.ShopOrder;
 
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootContextUser;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 public class ShopOfferGenerator implements LootContextUser {
 
-    public static final Codec<ShopOfferGenerator> CODEC = null;
+    public static final Codec<ShopOfferGenerator> CODEC = RecordCodecBuilder.create(instance -> 
+        instance.group(
+            IRewardGenerator.CODEC.fieldOf("reward").forGetter(ShopOfferGenerator::getRewardGenerator),
+            IngredientRandomizer.CODEC.fieldOf("order").forGetter(ShopOfferGenerator::getOrderRandomizer),
+            Codec.list(ShopOrderModifierEntry.CODEC).fieldOf("orderModifiers").forGetter(ShopOfferGenerator::getOrderModifiers)
+        ).apply(instance, ShopOfferGenerator::new)
+    );
 
-    public final IPaymentGenerator<?> paymentGenerator;
+    public final IRewardGenerator rewardGenerator;
     public final IngredientRandomizer orderRandomizer;
-    public final List<OrderModifierEntry> orderModifiers;
+    public final List<ShopOrderModifierEntry> orderModifiers;
     
-    public ShopOfferGenerator(IPaymentGenerator<?> paymentGenerator, IngredientRandomizer orderRandomizer,
-            List<OrderModifierEntry> orderModifiers) {
-        this.paymentGenerator = paymentGenerator;
+    public ShopOfferGenerator(IRewardGenerator rewardGenerator, IngredientRandomizer orderRandomizer, List<ShopOrderModifierEntry> orderModifiers) {
+        this.rewardGenerator = rewardGenerator;
         this.orderRandomizer = orderRandomizer;
         this.orderModifiers = orderModifiers;
     };
 
-    public List<ShopOffer> generate(LootContext context) {
-        return List.of(); //TODO
+    @Deprecated
+    public ShopOffer generate(LootContext context) {
+        return new ShopOffer(rewardGenerator.generate(context), new ShopOrder(orderRandomizer.generate(context), orderModifiers.stream().filter(ome -> ome.chance().getFloat(context) < context.getRandom().nextFloat()).map(ShopOrderModifierEntry::orderModifier).toList()));
     };
 
-    public static record OrderModifierEntry(ShopOrderModifier orderModifier, NumberProvider chance) {
+    public IRewardGenerator getRewardGenerator() {
+        return rewardGenerator;
+    };
 
-        public static final Codec<OrderModifierEntry> CODEC = RecordCodecBuilder.create(instance -> 
-            instance.group(
-                ShopOrderModifier.CODEC.fieldOf("modifier").forGetter(OrderModifierEntry::orderModifier),
-                GsonSerializableCodecs.NUMBER_PROVIDER.fieldOf("chance").forGetter(OrderModifierEntry::chance)
-            ).apply(instance, OrderModifierEntry::new)
-        );
+    public IngredientRandomizer getOrderRandomizer() {
+        return orderRandomizer;
+    };
+
+    public List<ShopOrderModifierEntry> getOrderModifiers() {
+        return orderModifiers;
     };
 };
