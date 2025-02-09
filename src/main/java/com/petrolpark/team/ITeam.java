@@ -48,7 +48,7 @@ public interface ITeam<T extends ITeam<? super T>> {
 
     public Component getName(Level level);
 
-    public <DT> DT getTeamData(ITeamDataType<? super DT> dataType);
+    public <DATA> DATA getTeamData(ITeamDataType<? super DATA> dataType);
 
     public void setChanged(Level level, ITeamDataType<?> dataType);
 

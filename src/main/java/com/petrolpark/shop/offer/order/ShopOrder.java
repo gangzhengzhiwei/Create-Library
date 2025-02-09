@@ -4,12 +4,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
+import java.util.Collections;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.petrolpark.recipe.ingredient.IngredientCodec;
 
 public class ShopOrder {
+
+    public static final ShopOrder EMPTY = new ShopOrder(Ingredient.EMPTY, Collections.emptyList());
 
     @SuppressWarnings("deprecation")
     public static final Codec<ShopOrder> CODEC = RecordCodecBuilder.create(instance ->

@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.petrolpark.Petrolpark;
 import com.petrolpark.network.packet.C2SPacket;
 import com.petrolpark.network.packet.S2CPacket;
+import com.petrolpark.team.packet.BindTeamBlockPacket;
 import com.petrolpark.team.packet.BindTeamItemPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +32,7 @@ public class PetrolparkMessages {
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
 
+        addC2SPacket(BindTeamBlockPacket.class, BindTeamBlockPacket::new);
         addC2SPacket(BindTeamItemPacket.class, BindTeamItemPacket::new);
     };
 

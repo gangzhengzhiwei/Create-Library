@@ -1,6 +1,7 @@
 package com.petrolpark.shop.offer;
 
 import java.util.List;
+import java.util.Collections;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +9,8 @@ import com.petrolpark.data.reward.IReward;
 import com.petrolpark.shop.offer.order.ShopOrder;
 
 public record ShopOffer(List<IReward> rewards, ShopOrder order) {
+
+    public static final ShopOffer EMPTY = new ShopOffer(Collections.emptyList(), ShopOrder.EMPTY);
   
     public static final Codec<ShopOffer> CODEC = RecordCodecBuilder.create(instance -> 
         instance.group(

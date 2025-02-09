@@ -11,12 +11,14 @@ import com.petrolpark.PetrolparkRegistries;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class NBTHelper {
@@ -78,8 +80,61 @@ public class NBTHelper {
     };
 
     /**
+     * Read a registered object (datapack or global).
+     * @param <OBJECT> Class of the object/registry
+     * @param tag
+     * @param key
+     * @param registryKey
+     * @param registryAccess
+     * @return {@code null} if the ResourceLocation is invalid
+     */
+    public static <OBJECT> OBJECT readRegistryObject(CompoundTag tag, String key, ResourceKey<Registry<OBJECT>> registryKey, Level level) {
+        return readRegistryObject(tag, key, registryKey, level.registryAccess());
+    };
+
+    /**
+     * Write a registered object (datapack or global).
+     * @param <OBJECT> Class of the object/registry
+     * @param tag
+     * @param key
+     * @param registryKey
+     * @param registryAccess
+     * @param object
+     */
+    public static <OBJECT> void writeRegistryObject(CompoundTag tag, String key, ResourceKey<Registry<OBJECT>> registryKey, Level level, OBJECT object) {
+        writeRegistryObject(tag, key, registryKey, level.registryAccess(), object);
+    };
+
+    /**
+     * Read a registered object (datapack or global).
+     * @param <OBJECT> Class of the object/registry
+     * @param tag
+     * @param key
+     * @param registryKey
+     * @param registryAccess
+     * @return {@code null} if the ResourceLocation is invalid
+     */
+    public static <OBJECT> OBJECT readRegistryObject(CompoundTag tag, String key, ResourceKey<Registry<OBJECT>> registryKey, RegistryAccess registryAccess) {
+        return registryAccess.registryOrThrow(registryKey).get(new ResourceLocation(tag.getString(key)));
+    };
+
+    /**
+     * Write a registered object (datapack or global).
+     * @param <OBJECT> Class of the object/registry
+     * @param tag
+     * @param key
+     * @param registryKey
+     * @param registryAccess
+     * @param object
+     */
+    public static <OBJECT> void writeRegistryObject(CompoundTag tag, String key, ResourceKey<Registry<OBJECT>> registryKey, RegistryAccess registryAccess, OBJECT object) {
+        ResourceLocation rl = registryAccess.registryOrThrow(registryKey).getKey(object);
+        if (rl != null) tag.putString(key, rl.toString());
+    };
+
+    /**
      * Read a global (non-datapack sensitive) registered object.
-     * @param <OBJECT>
+     * @param <OBJECT> Class of the object/registry
      * @param tag
      * @param key
      * @param registryKey

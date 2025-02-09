@@ -28,6 +28,8 @@ public interface IngredientModifier extends LootContextUser {
     public IngredientModifierType getType();
 
     public static ForgeRegistryObjectGSONAdapter<IngredientModifier, IngredientModifierType> createGsonAdapter() {
-        return ForgeRegistryObjectGSONAdapter.builder(PetrolparkRegistries.Keys.INGREDIENT_MODIFIER_TYPE, "ingredient_modifier", "type", IngredientModifier::getType).build();
+        return ForgeRegistryObjectGSONAdapter.builder(PetrolparkRegistries.Keys.INGREDIENT_MODIFIER_TYPE, "ingredient_modifier", "type", IngredientModifier::getType)
+            .withDefaultType(IngredientModifierTypes.PASS::get)
+            .build();
     };
 };
