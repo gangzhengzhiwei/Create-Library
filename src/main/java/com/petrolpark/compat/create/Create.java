@@ -31,6 +31,7 @@ public class Create {
 
     private static void init(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            CreateMessages.register();
             PetrolparkItemAttributes.register();
         });
     };
