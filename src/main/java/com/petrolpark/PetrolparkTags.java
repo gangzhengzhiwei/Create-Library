@@ -1,6 +1,7 @@
 package com.petrolpark;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import com.petrolpark.contamination.Contaminant;
 import com.petrolpark.team.data.ITeamDataType;
@@ -133,7 +134,10 @@ public class PetrolparkTags {
         };
 
         public boolean matches(MenuType<?> menuType) {
-            return ForgeRegistries.MENU_TYPES.getHolder(menuType).orElseThrow().is(tag);
+            if(ForgeRegistries.MENU_TYPES.getHolder(menuType).isEmpty()){
+                throw new UnsupportedOperationException("Not Support");
+            }
+            return ForgeRegistries.MENU_TYPES.getHolder(menuType).get().is(tag);
         };
     };
 
