@@ -42,8 +42,8 @@ public class NoTeam implements ITeam<NoTeam> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <DT> DT getTeamData(ITeamDataType<? super DT> dataType) {
-        return (DT)dataType.getBlankInstance();
+    public <DATA> DATA getTeamData(ITeamDataType<? super DATA> dataType) {
+        return (DATA)dataType.getBlankInstance();
     };
 
     @Override
@@ -59,7 +59,7 @@ public class NoTeam implements ITeam<NoTeam> {
 
         @Override
         public NoTeam read(CompoundTag tag, Level level) {
-            return NoTeam.INSTANCE;
+            return INSTANCE;
         };
 
         @Override

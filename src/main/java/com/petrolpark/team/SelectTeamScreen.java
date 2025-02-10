@@ -16,7 +16,7 @@ public class SelectTeamScreen extends Screen {
 
     protected ITeam<?> selectedTeam;
 
-    protected SelectTeamScreen(Component title, List<ITeam<?>> selectableTeams, BindTeamPacket.Factory packetFactory) {
+    public SelectTeamScreen(Component title, List<ITeam<?>> selectableTeams, BindTeamPacket.Factory packetFactory) {
         super(title);
         this.selectableTeams = selectableTeams;
         this.packetFactory = packetFactory;

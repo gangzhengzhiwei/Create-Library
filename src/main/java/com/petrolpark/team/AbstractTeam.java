@@ -23,8 +23,8 @@ public abstract class AbstractTeam<T extends ITeam<? super T>> implements ITeam<
 
     @Override
     @SuppressWarnings("unchecked")
-    public <DT> DT getTeamData(ITeamDataType<? super DT> dataType) {
-        return (DT)data.computeIfAbsent(dataType, ITeamDataType::getBlankInstance);
+    public <DATA> DATA getTeamData(ITeamDataType<? super DATA> dataType) {
+        return (DATA)data.computeIfAbsent(dataType, ITeamDataType::getBlankInstance);
     };
 
     public Stream<ITeamDataType<?>> streamNonBlankTeamData() {

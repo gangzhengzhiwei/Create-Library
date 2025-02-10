@@ -1,10 +1,7 @@
 package com.petrolpark.compat.create.event;
 
 import com.petrolpark.Petrolpark;
-import com.petrolpark.network.PetrolparkMessages;
-import com.petrolpark.network.RegisterPetrolparkMessagesEvent;
 import com.petrolpark.recipe.advancedprocessing.firsttimelucky.FirstTimeLuckyRecipesCapability;
-import com.petrolpark.tube.BuildTubePacket;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -13,11 +10,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CreateCommonEvents {
-
-    @SubscribeEvent
-    public static void onRegisterPetrolparkMessages(RegisterPetrolparkMessagesEvent event) {
-        PetrolparkMessages.addC2SPacket(BuildTubePacket.class, BuildTubePacket::new);
-    };
     
     @SubscribeEvent
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {

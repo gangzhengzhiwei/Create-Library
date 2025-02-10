@@ -4,6 +4,7 @@ import static com.petrolpark.Petrolpark.REGISTRATE;
 
 import com.petrolpark.data.loot.numberprovider.ContextEntityNumberProvider;
 import com.petrolpark.data.loot.numberprovider.ContextTeamNumberProvider;
+import com.petrolpark.data.loot.numberprovider.CustomerWaitTimeNumberProvider;
 import com.petrolpark.data.loot.numberprovider.FunctionNumberProvider;
 import com.petrolpark.data.loot.numberprovider.MaxNumberProvider;
 import com.petrolpark.data.loot.numberprovider.MinNumberProvider;
@@ -22,6 +23,8 @@ public class PetrolparkLootNumberProviderTypes {
     public static final RegistryEntry<LootNumberProviderType> SUM = REGISTRATE.lootNumberProviderType("sum", new FunctionNumberProvider.Serializer<>(SumNumberProvider::new));
     public static final RegistryEntry<LootNumberProviderType> PRODUCT = REGISTRATE.lootNumberProviderType("product", new FunctionNumberProvider.Serializer<>(ProductNumberProvider::new));
     public static final RegistryEntry<LootNumberProviderType> SIGMOID = REGISTRATE.lootNumberProviderType("sigmoid", new SigmoidNumberProvider.Serializer());
+
+    public static final RegistryEntry<LootNumberProviderType> CUSTOMER_WAIT_TIME = REGISTRATE.lootNumberProviderType("customer_wait_time", new SimpleSerializer<>(CustomerWaitTimeNumberProvider::new));
 
     public static final RegistryEntry<LootNumberProviderType> CONTEXT_ENTITY = REGISTRATE.lootNumberProviderType("context_entity_property", new ContextEntityNumberProvider.Serializer());
     public static final RegistryEntry<LootNumberProviderType> CONTEXT_TEAM = REGISTRATE.lootNumberProviderType("context_team_property", new ContextTeamNumberProvider.Serializer());

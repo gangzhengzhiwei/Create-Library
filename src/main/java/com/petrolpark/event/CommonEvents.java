@@ -11,6 +11,7 @@ import com.petrolpark.contamination.Contaminant;
 import com.petrolpark.contamination.ItemContamination;
 import com.petrolpark.itemdecay.IDecayingItem;
 import com.petrolpark.itemdecay.DecayingItemHandler.ServerDecayingItemHandler;
+import com.petrolpark.shop.customer.EntityCustomer;
 import com.petrolpark.team.SinglePlayerTeam;
 
 import net.minecraft.world.entity.Entity;
@@ -38,9 +39,12 @@ public class CommonEvents {
     };
 
     @SubscribeEvent
-    public static void onTick(LevelTickEvent event) {
+    public static void onTickLevel(LevelTickEvent event) {
         // Decaying Items
-        if (event.phase == LevelTickEvent.Phase.END && !event.level.isClientSide() && event.level.getServer().overworld() == event.level) ((ServerDecayingItemHandler)Petrolpark.DECAYING_ITEM_HANDLER.get()).gameTime++;
+        if (event.phase == LevelTickEvent.Phase.END) {
+            if (!event.level.isClientSide() && event.level.getServer().overworld() == event.level) ((ServerDecayingItemHandler)Petrolpark.DECAYING_ITEM_HANDLER.get()).gameTime++;
+        };
+        
     };
 
     @SubscribeEvent
@@ -49,12 +53,16 @@ public class CommonEvents {
     };
 
     @SubscribeEvent
-    public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof final Player player) {
+    public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
+        Entity entity = event.getObject();
+        if (entity instanceof final Player player) {
             // Add Badge Capability
             if (!player.getCapability(BadgesCapability.Provider.PLAYER_BADGES).isPresent()) event.addCapability(Petrolpark.asResource("badges"), new BadgesCapability.Provider());
             // Add Team Capability
             if (!player.getCapability(SinglePlayerTeam.CAPABILITY).isPresent()) event.addCapability(Petrolpark.asResource("team"), new SinglePlayerTeam(player));
+        } else {
+            // Add Shop Customer capability
+            if (!entity.getCapability(EntityCustomer.CAPABILITY).isPresent()) event.addCapability(Petrolpark.asResource("customer"), new EntityCustomer(entity));
         };
     };
 

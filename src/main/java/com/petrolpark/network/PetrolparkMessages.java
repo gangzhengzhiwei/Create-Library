@@ -5,10 +5,11 @@ import java.util.function.Function;
 import com.petrolpark.Petrolpark;
 import com.petrolpark.network.packet.C2SPacket;
 import com.petrolpark.network.packet.S2CPacket;
+import com.petrolpark.team.packet.BindTeamBlockPacket;
+import com.petrolpark.team.packet.BindTeamItemPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -31,9 +32,8 @@ public class PetrolparkMessages {
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
 
-            addS2CPacket(null, null);
-
-        MinecraftForge.EVENT_BUS.post(new RegisterPetrolparkMessagesEvent());
+        addC2SPacket(BindTeamBlockPacket.class, BindTeamBlockPacket::new);
+        addC2SPacket(BindTeamItemPacket.class, BindTeamItemPacket::new);
     };
 
     public static <T extends S2CPacket> void addS2CPacket(Class<T> clazz, Function<FriendlyByteBuf, T> decoder) {

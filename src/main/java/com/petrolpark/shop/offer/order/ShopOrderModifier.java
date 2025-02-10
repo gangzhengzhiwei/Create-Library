@@ -7,20 +7,22 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.petrolpark.network.GsonSerializableCodecs;
 import com.petrolpark.recipe.ingredient.modifier.IngredientModifier;
+import com.petrolpark.recipe.ingredient.modifier.PassIngredientModifier;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootContextUser;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 public class ShopOrderModifier implements LootContextUser {
 
     public static final Codec<ShopOrderModifier> CODEC = RecordCodecBuilder.create(instance -> 
         instance.group(
-            IngredientModifier.CODEC.fieldOf("requirement").forGetter(ShopOrderModifier::getIngredientModifier),
+            IngredientModifier.CODEC.optionalFieldOf("requirement", PassIngredientModifier.INSTANCE).forGetter(ShopOrderModifier::getIngredientModifier),
             GsonSerializableCodecs.NUMBER_PROVIDER.fieldOf("success").forGetter(ShopOrderModifier::getSuccessMultiplier),
-            GsonSerializableCodecs.NUMBER_PROVIDER.fieldOf("failure").forGetter(ShopOrderModifier::getFailureNumberProvider)
+            GsonSerializableCodecs.NUMBER_PROVIDER.optionalFieldOf("failure", ConstantValue.exactly(0f)).forGetter(ShopOrderModifier::getFailureNumberProvider)
         ).apply(instance, ShopOrderModifier::new)
     );
     

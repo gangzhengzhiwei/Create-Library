@@ -49,6 +49,8 @@
     "item.petrolpark.badge.awarded": "Awarded to %1$s on %2$s",
     "item.petrolpark.badge.unknown": "This isn't a real Badge...",
     "item.petrolpark.decaying_item.remaining": "Decays in %1$s",
+    "item.petrolpark.menu": "Menu",
+    "item.petrolpark.menu.team_selection": "Select Team for this %1$s:",
 
     "petrolpark.key.tube.build": "Confirm tube construction",
     "petrolpark.key.tube.delete_control_point": "Delete tube node",
@@ -80,5 +82,7 @@
     "petrolpark.tube.result.too_poor": "Not enough %1$s",
     "petrolpark.tube.result.too_many_points": "Too many control points",
     "petrolpark.tube.result.wrong_block": "Can't connect those types of blocks",
-    "petrolpark.tube.result.wrong_face": "Can't connect on that face"
+    "petrolpark.tube.result.wrong_face": "Can't connect on that face",
+
+    "shop.petrolpark.unknown": "Unknown Shop"
 }
